@@ -1,5 +1,5 @@
 export default function sitemap() {
-  const baseUrl = 'https://sahu-vert.vercel.app'
+  const baseUrl = 'https://sahu.kr'
 
   return [
     {
