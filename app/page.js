@@ -29,15 +29,16 @@ function DeadlineBadge({ item, diffDays, deathDate }) {
     return (
       <span
         style={{
-          background: "#ef444420",
-          color: "#ef4444",
-          padding: "2px 8px",
-          borderRadius: 4,
-          fontSize: 12,
+          background: "var(--danger-bg)",
+          color: "var(--danger)",
+          padding: "2px 10px",
+          borderRadius: 20,
+          fontSize: 11,
           fontWeight: 600,
+          letterSpacing: "0.02em",
         }}
       >
-        기한 초과 {Math.abs(remaining)}일
+        {Math.abs(remaining)}일 초과
       </span>
     );
   }
@@ -45,12 +46,13 @@ function DeadlineBadge({ item, diffDays, deathDate }) {
     return (
       <span
         style={{
-          background: "#eab30820",
-          color: "#eab308",
-          padding: "2px 8px",
-          borderRadius: 4,
-          fontSize: 12,
+          background: "var(--warning-bg)",
+          color: "var(--warning)",
+          padding: "2px 10px",
+          borderRadius: 20,
+          fontSize: 11,
           fontWeight: 600,
+          letterSpacing: "0.02em",
         }}
       >
         D-{remaining}
@@ -60,11 +62,12 @@ function DeadlineBadge({ item, diffDays, deathDate }) {
   return (
     <span
       style={{
-        background: "#3b82f620",
-        color: "#3b82f6",
-        padding: "2px 8px",
-        borderRadius: 4,
-        fontSize: 12,
+        background: "var(--accent-glow)",
+        color: "var(--accent)",
+        padding: "2px 10px",
+        borderRadius: 20,
+        fontSize: 11,
+        fontWeight: 500,
       }}
     >
       D-{remaining}
@@ -78,19 +81,19 @@ function CheckItem({ item, checked, onToggle, diffDays, deathDate }) {
   return (
     <div
       style={{
-        background: checked ? "#0d1a0d" : "#12121a",
-        border: `1px solid ${checked ? "#22c55e30" : "#222233"}`,
-        borderRadius: 8,
-        padding: "16px",
+        background: checked ? "var(--success-bg)" : "var(--surface)",
+        border: `1px solid ${checked ? "#34d39925" : "var(--border)"}`,
+        borderRadius: 12,
+        padding: "16px 18px",
         marginBottom: 8,
-        transition: "all 0.2s",
+        transition: "all 0.2s ease",
       }}
     >
       <div
         style={{
           display: "flex",
           alignItems: "flex-start",
-          gap: 12,
+          gap: 14,
           cursor: "pointer",
         }}
         onClick={() => setExpanded(!expanded)}
@@ -102,16 +105,9 @@ function CheckItem({ item, checked, onToggle, diffDays, deathDate }) {
             e.stopPropagation();
             onToggle(item.id);
           }}
-          style={{
-            width: 20,
-            height: 20,
-            marginTop: 2,
-            accentColor: "#22c55e",
-            cursor: "pointer",
-            flexShrink: 0,
-          }}
+          style={{ marginTop: 2 }}
         />
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
               display: "flex",
@@ -122,10 +118,10 @@ function CheckItem({ item, checked, onToggle, diffDays, deathDate }) {
           >
             <span
               style={{
-                fontSize: 15,
+                fontSize: 14,
                 fontWeight: 600,
                 textDecoration: checked ? "line-through" : "none",
-                color: checked ? "#555566" : "#e0e0e8",
+                color: checked ? "var(--text-dim)" : "var(--text)",
               }}
             >
               {item.title}
@@ -133,39 +129,49 @@ function CheckItem({ item, checked, onToggle, diffDays, deathDate }) {
             {item.critical && !checked && (
               <span
                 style={{
-                  background: "#ef444420",
-                  color: "#ef4444",
-                  padding: "1px 6px",
-                  borderRadius: 4,
-                  fontSize: 11,
-                  fontWeight: 600,
+                  background: "var(--danger-bg)",
+                  color: "var(--danger)",
+                  padding: "1px 8px",
+                  borderRadius: 20,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
                 }}
               >
                 필수
               </span>
             )}
-            <DeadlineBadge item={item} diffDays={diffDays} deathDate={deathDate} />
+            <DeadlineBadge
+              item={item}
+              diffDays={diffDays}
+              deathDate={deathDate}
+            />
           </div>
-          <p
-            style={{
-              color: "#8888a0",
-              fontSize: 13,
-              marginTop: 4,
-            }}
-          >
-            {item.description}
-          </p>
+          {!checked && (
+            <p
+              style={{
+                color: "var(--text-secondary)",
+                fontSize: 13,
+                marginTop: 5,
+                lineHeight: 1.5,
+              }}
+            >
+              {item.description}
+            </p>
+          )}
         </div>
         <span
           style={{
-            color: "#555566",
-            fontSize: 18,
+            color: "var(--text-dim)",
+            fontSize: 12,
             flexShrink: 0,
+            marginTop: 4,
             transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "transform 0.2s",
+            transition: "transform 0.2s ease",
           }}
         >
-          ▼
+          &#9662;
         </span>
       </div>
 
@@ -173,55 +179,80 @@ function CheckItem({ item, checked, onToggle, diffDays, deathDate }) {
         <div
           style={{
             marginTop: 16,
-            marginLeft: 32,
+            marginLeft: 34,
             display: "flex",
             flexDirection: "column",
-            gap: 12,
+            gap: 14,
           }}
         >
           <div>
             <div
-              style={{ fontSize: 12, color: "#555566", marginBottom: 4, fontWeight: 600 }}
+              style={{
+                fontSize: 11,
+                color: "var(--text-dim)",
+                marginBottom: 5,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+              }}
             >
               어디서
             </div>
-            <div style={{ fontSize: 14, color: "#8888a0" }}>{item.where}</div>
+            <div style={{ fontSize: 13, color: "var(--text-secondary)" }}>
+              {item.where}
+            </div>
           </div>
 
           <div>
             <div
-              style={{ fontSize: 12, color: "#555566", marginBottom: 4, fontWeight: 600 }}
+              style={{
+                fontSize: 11,
+                color: "var(--text-dim)",
+                marginBottom: 5,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+              }}
             >
               필요 서류
             </div>
-            <ul
+            <div
               style={{
-                listStyle: "none",
-                padding: 0,
                 display: "flex",
                 flexDirection: "column",
-                gap: 4,
+                gap: 3,
               }}
             >
               {item.documents.map((doc) => (
-                <li
+                <div
                   key={doc}
-                  style={{ fontSize: 14, color: "#8888a0" }}
+                  style={{
+                    fontSize: 13,
+                    color: "var(--text-secondary)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
                 >
-                  · {doc}
-                </li>
+                  <span style={{ color: "var(--text-dim)", fontSize: 8 }}>
+                    ●
+                  </span>
+                  {doc}
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
 
           {item.tips.length > 0 && (
             <div>
               <div
                 style={{
-                  fontSize: 12,
-                  color: "#555566",
-                  marginBottom: 4,
+                  fontSize: 11,
+                  color: "var(--text-dim)",
+                  marginBottom: 5,
                   fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
                 }}
               >
                 참고사항
@@ -231,9 +262,11 @@ function CheckItem({ item, checked, onToggle, diffDays, deathDate }) {
                   key={tip}
                   style={{
                     fontSize: 13,
-                    color: tip.startsWith("\u26A0\uFE0F") ? "#eab308" : "#8888a0",
-                    marginBottom: 4,
-                    lineHeight: 1.5,
+                    color: tip.startsWith("\u26A0\uFE0F")
+                      ? "var(--warning)"
+                      : "var(--text-secondary)",
+                    marginBottom: 5,
+                    lineHeight: 1.6,
                   }}
                 >
                   {tip}
@@ -250,36 +283,41 @@ function CheckItem({ item, checked, onToggle, diffDays, deathDate }) {
 function ProgressBar({ checked, total }) {
   const pct = total === 0 ? 0 : Math.round((checked / total) * 100);
   return (
-    <div style={{ marginBottom: 24 }}>
+    <div style={{ marginBottom: 28 }}>
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
-          fontSize: 13,
-          color: "#8888a0",
-          marginBottom: 6,
+          fontSize: 12,
+          color: "var(--text-dim)",
+          marginBottom: 8,
+          fontWeight: 500,
         }}
       >
         <span>진행률</span>
-        <span>
-          {checked}/{total} 완료 ({pct}%)
+        <span style={{ color: "var(--text-secondary)" }}>
+          {checked}/{total} ({pct}%)
         </span>
       </div>
       <div
         style={{
-          height: 8,
-          background: "#1a1a26",
-          borderRadius: 4,
+          height: 6,
+          background: "var(--surface)",
+          borderRadius: 3,
           overflow: "hidden",
+          border: "1px solid var(--border)",
         }}
       >
         <div
           style={{
             height: "100%",
             width: `${pct}%`,
-            background: pct === 100 ? "#22c55e" : "#7b9fff",
-            borderRadius: 4,
-            transition: "width 0.3s ease",
+            background:
+              pct === 100
+                ? "var(--success)"
+                : "linear-gradient(90deg, var(--accent), var(--accent-hover))",
+            borderRadius: 3,
+            transition: "width 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         />
       </div>
@@ -290,8 +328,6 @@ function ProgressBar({ checked, total }) {
 function DatePicker({ value, onChange }) {
   const today = new Date();
   const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth() + 1;
-  const currentDay = today.getDate();
 
   const parsed = value ? value.split("-") : ["", "", ""];
   const [year, setYear] = useState(parsed[0] || "");
@@ -319,7 +355,6 @@ function DatePicker({ value, onChange }) {
     }
   }, [year, month, day]);
 
-  // 값 복원
   useEffect(() => {
     if (value) {
       const p = value.split("-");
@@ -332,34 +367,56 @@ function DatePicker({ value, onChange }) {
   const selectStyle = {
     flex: 1,
     padding: "12px 8px",
-    fontSize: 16,
-    background: "#0a0a0f",
-    border: "1px solid #222233",
-    borderRadius: 8,
-    color: "#e0e0e8",
+    fontSize: 15,
+    background: "var(--bg)",
+    border: "1px solid var(--border)",
+    borderRadius: 10,
+    color: "var(--text)",
     appearance: "none",
     textAlign: "center",
     cursor: "pointer",
+    fontWeight: 500,
   };
 
   return (
     <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-      <select value={year} onChange={(e) => setYear(e.target.value)} style={selectStyle}>
+      <select
+        value={year}
+        onChange={(e) => setYear(e.target.value)}
+        style={selectStyle}
+      >
         <option value="">년</option>
         {years.map((y) => (
-          <option key={y} value={y}>{y}년</option>
+          <option key={y} value={y}>
+            {y}년
+          </option>
         ))}
       </select>
-      <select value={month} onChange={(e) => { setMonth(e.target.value); setDay(""); }} style={selectStyle}>
+      <select
+        value={month}
+        onChange={(e) => {
+          setMonth(e.target.value);
+          setDay("");
+        }}
+        style={selectStyle}
+      >
         <option value="">월</option>
         {months.map((m) => (
-          <option key={m} value={m}>{m}월</option>
+          <option key={m} value={m}>
+            {m}월
+          </option>
         ))}
       </select>
-      <select value={day} onChange={(e) => setDay(e.target.value)} style={selectStyle}>
+      <select
+        value={day}
+        onChange={(e) => setDay(e.target.value)}
+        style={selectStyle}
+      >
         <option value="">일</option>
         {days.map((d) => (
-          <option key={d} value={d}>{d}일</option>
+          <option key={d} value={d}>
+            {d}일
+          </option>
         ))}
       </select>
     </div>
@@ -410,7 +467,8 @@ export default function Home() {
 
   const handleShare = async () => {
     const url = window.location.origin;
-    const text = "사후(SAHU) — 사망 후 행정 처리 가이드\n해야 할 일을 단계별로 안내합니다.";
+    const text =
+      "사후(SAHU) — 사망 후 행정 처리 가이드\n해야 할 일을 단계별로 안내합니다.";
     if (navigator.share) {
       try {
         await navigator.share({ title: "사후(SAHU)", text, url });
@@ -430,56 +488,75 @@ export default function Home() {
     }
   };
 
+  // ── 시작 화면 ──
   if (!started) {
     return (
       <main
         style={{
-          maxWidth: 560,
+          maxWidth: 480,
           margin: "0 auto",
-          padding: "80px 20px",
-          textAlign: "center",
+          padding: "100px 20px 80px",
         }}
       >
-        <h1
-          style={{
-            fontSize: 32,
-            fontWeight: 700,
-            marginBottom: 8,
-          }}
-        >
-          사후(SAHU)
-        </h1>
-        <p
-          style={{
-            fontSize: 16,
-            color: "#8888a0",
-            marginBottom: 48,
-            lineHeight: 1.7,
-          }}
-        >
-          가족을 잃은 후 해야 할 행정 절차를
-          <br />
-          단계별로 안내합니다.
-        </p>
+        <div style={{ textAlign: "center", marginBottom: 56 }}>
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 48,
+              height: 48,
+              borderRadius: 14,
+              background: "var(--accent-glow)",
+              border: "1px solid var(--accent)",
+              marginBottom: 24,
+              fontSize: 20,
+            }}
+          >
+            S
+          </div>
+          <h1
+            style={{
+              fontSize: 28,
+              fontWeight: 700,
+              marginBottom: 10,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            사후
+          </h1>
+          <p
+            style={{
+              fontSize: 15,
+              color: "var(--text-secondary)",
+              lineHeight: 1.7,
+            }}
+          >
+            가족을 잃은 후 해야 할 행정 절차를
+            <br />
+            단계별로 안내합니다.
+          </p>
+        </div>
 
         <div
           style={{
-            background: "#12121a",
-            border: "1px solid #222233",
-            borderRadius: 12,
-            padding: "32px 24px",
-            marginBottom: 24,
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
+            borderRadius: 16,
+            padding: "28px 24px",
+            marginBottom: 16,
           }}
         >
           <label
             style={{
               display: "block",
-              fontSize: 14,
-              color: "#8888a0",
-              marginBottom: 12,
+              fontSize: 13,
+              color: "var(--text-secondary)",
+              marginBottom: 14,
+              fontWeight: 500,
             }}
           >
-            사망일을 입력해주세요
+            사망일을 선택해주세요
           </label>
           <DatePicker value={deathDate} onChange={setDeathDate} />
           <button
@@ -488,13 +565,17 @@ export default function Home() {
             style={{
               width: "100%",
               padding: "14px",
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: 600,
-              background: deathDate ? "#7b9fff" : "#333",
-              color: deathDate ? "#000" : "#666",
+              background: deathDate
+                ? "linear-gradient(135deg, var(--accent), var(--accent-hover))"
+                : "var(--surface-hover)",
+              color: deathDate ? "#fff" : "var(--text-dim)",
               border: "none",
-              borderRadius: 8,
+              borderRadius: 10,
               cursor: deathDate ? "pointer" : "not-allowed",
+              transition: "all 0.2s ease",
+              letterSpacing: "-0.01em",
             }}
           >
             시작하기
@@ -503,56 +584,100 @@ export default function Home() {
 
         <div
           style={{
-            background: "#12121a",
-            border: "1px solid #222233",
-            borderRadius: 12,
-            padding: "20px 24px",
-            textAlign: "left",
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
+            borderRadius: 16,
+            padding: "22px 24px",
           }}
         >
           <div
-            style={{ fontSize: 13, color: "#555566", marginBottom: 12, fontWeight: 600 }}
+            style={{
+              fontSize: 11,
+              color: "var(--text-dim)",
+              marginBottom: 14,
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+            }}
           >
             이 서비스가 도와드리는 것
           </div>
-          <ul
+          <div
             style={{
-              listStyle: "none",
-              padding: 0,
               display: "flex",
               flexDirection: "column",
-              gap: 8,
-              fontSize: 14,
-              color: "#8888a0",
+              gap: 10,
+              fontSize: 13,
+              color: "var(--text-secondary)",
             }}
           >
-            <li>· 사망신고부터 상속세까지 전체 절차 안내</li>
-            <li>· 기한이 있는 항목 D-day 자동 계산</li>
-            <li>· 각 절차별 필요 서류 및 방문처 안내</li>
-            <li>· 진행 상황 체크리스트로 관리</li>
-            <li>· 모든 데이터는 브라우저에만 저장 (개인정보 수집 없음)</li>
-          </ul>
+            {[
+              "사망신고부터 상속세까지 전체 절차 안내",
+              "기한이 있는 항목 D-day 자동 계산",
+              "각 절차별 필요 서류 및 방문처 안내",
+              "진행 상황 체크리스트로 관리",
+              "모든 데이터는 브라우저에만 저장",
+            ].map((text) => (
+              <div
+                key={text}
+                style={{ display: "flex", alignItems: "center", gap: 10 }}
+              >
+                <span
+                  style={{
+                    width: 4,
+                    height: 4,
+                    borderRadius: "50%",
+                    background: "var(--accent)",
+                    flexShrink: 0,
+                  }}
+                />
+                {text}
+              </div>
+            ))}
+          </div>
         </div>
 
         <p
           style={{
-            fontSize: 12,
-            color: "#555566",
+            fontSize: 11,
+            color: "var(--text-dim)",
             marginTop: 32,
+            textAlign: "center",
+            lineHeight: 1.5,
           }}
         >
-          본 서비스는 일반적인 정보 제공 목적이며, 법률·세무 자문을 대체하지 않습니다.
+          본 서비스는 일반적인 정보 제공 목적이며,
+          <br />
+          법률·세무 자문을 대체하지 않습니다.
         </p>
       </main>
     );
   }
 
+  // ── 체크리스트 화면 ──
+  const urgentItems = CHECKLIST.filter(
+    (item) =>
+      item.deadline &&
+      !checkedItems[item.id] &&
+      diffDays !== undefined &&
+      getRemainingDays(item, diffDays, deathDate) >= 0 &&
+      getRemainingDays(item, diffDays, deathDate) <= 14
+  );
+
+  const overdueItems = CHECKLIST.filter(
+    (item) =>
+      item.deadline &&
+      !checkedItems[item.id] &&
+      diffDays !== undefined &&
+      getRemainingDays(item, diffDays, deathDate) < 0
+  );
+
   return (
     <main
       style={{
-        maxWidth: 640,
+        maxWidth: 600,
         margin: "0 auto",
-        padding: "40px 20px 80px",
+        padding: "32px 20px 80px",
       }}
     >
       <header
@@ -560,35 +685,64 @@ export default function Home() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: 8,
+          marginBottom: 4,
         }}
       >
-        <h1 style={{ fontSize: 24, fontWeight: 700 }}>사후(SAHU)</h1>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 8,
+              background: "var(--accent-glow)",
+              border: "1px solid var(--accent)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 12,
+              fontWeight: 700,
+              color: "var(--accent)",
+            }}
+          >
+            S
+          </div>
+          <h1
+            style={{
+              fontSize: 18,
+              fontWeight: 700,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            사후
+          </h1>
+        </div>
+        <div style={{ display: "flex", gap: 6 }}>
           <button
             onClick={handleShare}
             style={{
-              background: "none",
-              border: "1px solid #7b9fff40",
-              color: "#7b9fff",
-              padding: "6px 12px",
-              borderRadius: 6,
+              background: "var(--accent-glow)",
+              border: "1px solid var(--accent)",
+              color: "var(--accent)",
+              padding: "6px 14px",
+              borderRadius: 8,
               fontSize: 12,
               cursor: "pointer",
+              fontWeight: 500,
             }}
           >
-            공유하기
+            공유
           </button>
           <button
             onClick={handleReset}
             style={{
-              background: "none",
-              border: "1px solid #333",
-              color: "#555566",
-              padding: "6px 12px",
-              borderRadius: 6,
+              background: "transparent",
+              border: "1px solid var(--border)",
+              color: "var(--text-dim)",
+              padding: "6px 14px",
+              borderRadius: 8,
               fontSize: 12,
               cursor: "pointer",
+              fontWeight: 500,
             }}
           >
             초기화
@@ -596,128 +750,143 @@ export default function Home() {
         </div>
       </header>
 
-      <p style={{ fontSize: 13, color: "#555566", marginBottom: 24 }}>
-        사망일: {deathDate} · 경과일: {diffDays}일
+      <p
+        style={{
+          fontSize: 12,
+          color: "var(--text-dim)",
+          marginBottom: 24,
+          fontWeight: 500,
+        }}
+      >
+        사망일 {deathDate} · 경과 {diffDays}일
       </p>
 
       <ProgressBar checked={checkedCount} total={CHECKLIST.length} />
 
-      {CHECKLIST.filter(
-        (item) =>
-          item.deadline &&
-          !checkedItems[item.id] &&
-          diffDays !== undefined &&
-          getRemainingDays(item, diffDays, deathDate) >= 0 &&
-          getRemainingDays(item, diffDays, deathDate) <= 14
-      ).length > 0 && (
+      {/* 기한 초과 */}
+      {overdueItems.length > 0 && (
         <div
           style={{
-            background: "#eab30810",
-            border: "1px solid #eab30830",
-            borderRadius: 8,
-            padding: "12px 16px",
-            marginBottom: 24,
+            background: "var(--danger-bg)",
+            border: "1px solid #f8717120",
+            borderRadius: 12,
+            padding: "14px 18px",
+            marginBottom: 16,
           }}
         >
           <div
             style={{
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: 600,
-              color: "#eab308",
-              marginBottom: 4,
+              color: "var(--danger)",
+              marginBottom: 6,
+              letterSpacing: "-0.01em",
             }}
           >
-            기한 임박 항목
+            기한 초과
           </div>
-          {CHECKLIST.filter(
-            (item) =>
-              item.deadline &&
-              !checkedItems[item.id] &&
-              diffDays !== undefined &&
-              getRemainingDays(item, diffDays, deathDate) >= 0 &&
-              getRemainingDays(item, diffDays, deathDate) <= 14
-          ).map((item) => (
+          {overdueItems.map((item) => (
             <div
               key={item.id}
-              style={{ fontSize: 13, color: "#eab308", marginTop: 4 }}
+              style={{
+                fontSize: 13,
+                color: "var(--danger)",
+                marginTop: 4,
+                opacity: 0.9,
+              }}
             >
-              · {item.title} — D-{getRemainingDays(item, diffDays, deathDate)}
+              {item.title} —{" "}
+              {Math.abs(getRemainingDays(item, diffDays, deathDate))}일 초과
             </div>
           ))}
         </div>
       )}
 
-      {CHECKLIST.filter(
-        (item) =>
-          item.deadline &&
-          !checkedItems[item.id] &&
-          diffDays !== undefined &&
-          getRemainingDays(item, diffDays, deathDate) < 0
-      ).length > 0 && (
+      {/* 기한 임박 */}
+      {urgentItems.length > 0 && (
         <div
           style={{
-            background: "#ef444410",
-            border: "1px solid #ef444430",
-            borderRadius: 8,
-            padding: "12px 16px",
-            marginBottom: 24,
+            background: "var(--warning-bg)",
+            border: "1px solid #fbbf2420",
+            borderRadius: 12,
+            padding: "14px 18px",
+            marginBottom: 16,
           }}
         >
           <div
             style={{
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: 600,
-              color: "#ef4444",
-              marginBottom: 4,
+              color: "var(--warning)",
+              marginBottom: 6,
+              letterSpacing: "-0.01em",
             }}
           >
-            기한 초과 항목
+            기한 임박
           </div>
-          {CHECKLIST.filter(
-            (item) =>
-              item.deadline &&
-              !checkedItems[item.id] &&
-              diffDays !== undefined &&
-              getRemainingDays(item, diffDays, deathDate) < 0
-          ).map((item) => (
+          {urgentItems.map((item) => (
             <div
               key={item.id}
-              style={{ fontSize: 13, color: "#ef4444", marginTop: 4 }}
+              style={{
+                fontSize: 13,
+                color: "var(--warning)",
+                marginTop: 4,
+                opacity: 0.9,
+              }}
             >
-              · {item.title} — {Math.abs(getRemainingDays(item, diffDays, deathDate))}일 초과
+              {item.title} — D-
+              {getRemainingDays(item, diffDays, deathDate)}
             </div>
           ))}
         </div>
       )}
 
+      {/* 카테고리별 체크리스트 */}
       {CATEGORIES.map((category) => {
-        const items = CHECKLIST.filter((item) => item.category === category.id);
+        const items = CHECKLIST.filter(
+          (item) => item.category === category.id
+        );
         if (items.length === 0) return null;
         const catChecked = items.filter((i) => checkedItems[i.id]).length;
 
         return (
-          <section key={category.id} style={{ marginBottom: 32 }}>
+          <section key={category.id} style={{ marginBottom: 28 }}>
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 8,
-                marginBottom: 12,
+                gap: 10,
+                marginBottom: 10,
+                paddingBottom: 8,
+                borderBottom: "1px solid var(--border)",
               }}
             >
               <div
                 style={{
-                  width: 10,
-                  height: 10,
+                  width: 8,
+                  height: 8,
                   borderRadius: "50%",
                   background: category.color,
                   flexShrink: 0,
+                  boxShadow: `0 0 8px ${category.color}40`,
                 }}
               />
-              <h2 style={{ fontSize: 16, fontWeight: 600 }}>
+              <h2
+                style={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  letterSpacing: "-0.01em",
+                }}
+              >
                 {category.label}
               </h2>
-              <span style={{ fontSize: 12, color: "#555566" }}>
+              <span
+                style={{
+                  fontSize: 11,
+                  color: "var(--text-dim)",
+                  fontWeight: 500,
+                }}
+              >
                 {catChecked}/{items.length}
               </span>
             </div>
@@ -735,57 +904,72 @@ export default function Home() {
         );
       })}
 
-      <a
-        href="/subscriptions"
-        style={{
-          display: "block",
-          background: "#12121a",
-          border: "1px solid #222233",
-          borderRadius: 8,
-          padding: "16px 20px",
-          marginTop: 8,
-          marginBottom: 8,
-          textDecoration: "none",
-          color: "#e0e0e8",
-        }}
-      >
-        <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>
-          구독/계정 해지 가이드 →
-        </div>
-        <div style={{ fontSize: 13, color: "#8888a0" }}>
-          고인 명의의 구독 서비스와 디지털 계정을 정리하세요
-        </div>
-      </a>
+      {/* 하단 링크 */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
+        <a href="/subscriptions" className="link-card">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  marginBottom: 3,
+                  color: "var(--text)",
+                }}
+              >
+                구독/계정 해지 가이드
+              </div>
+              <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>
+                고인 명의의 구독 서비스와 디지털 계정 정리
+              </div>
+            </div>
+            <span style={{ color: "var(--text-dim)", fontSize: 16 }}>›</span>
+          </div>
+        </a>
 
-      <a
-        href="/guides"
-        style={{
-          display: "block",
-          background: "#12121a",
-          border: "1px solid #222233",
-          borderRadius: 8,
-          padding: "16px 20px",
-          marginBottom: 8,
-          textDecoration: "none",
-          color: "#e0e0e8",
-        }}
-      >
-        <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>
-          절차별 상세 가이드 →
-        </div>
-        <div style={{ fontSize: 13, color: "#8888a0" }}>
-          사망신고, 상속포기, 안심상속 등 항목별 상세 안내
-        </div>
-      </a>
+        <a href="/guides" className="link-card">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  marginBottom: 3,
+                  color: "var(--text)",
+                }}
+              >
+                절차별 상세 가이드
+              </div>
+              <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>
+                사망신고, 상속포기, 안심상속 등 상세 안내
+              </div>
+            </div>
+            <span style={{ color: "var(--text-dim)", fontSize: 16 }}>›</span>
+          </div>
+        </a>
+      </div>
 
       <footer
         style={{
-          borderTop: "1px solid #222233",
-          paddingTop: 24,
-          marginTop: 24,
-          fontSize: 12,
-          color: "#555566",
+          borderTop: "1px solid var(--border)",
+          paddingTop: 20,
+          marginTop: 32,
+          fontSize: 11,
+          color: "var(--text-dim)",
           textAlign: "center",
+          lineHeight: 1.6,
         }}
       >
         <p>
@@ -793,7 +977,7 @@ export default function Home() {
           않습니다.
         </p>
         <p style={{ marginTop: 4 }}>
-          © 2026 SAHU. 모든 데이터는 브라우저에만 저장됩니다.
+          © 2026 사후(SAHU). 모든 데이터는 브라우저에만 저장됩니다.
         </p>
       </footer>
     </main>

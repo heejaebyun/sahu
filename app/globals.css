@@ -5,28 +5,118 @@
 }
 
 :root {
-  --bg: #0a0a0f;
-  --surface: #12121a;
-  --surface-hover: #1a1a26;
-  --border: #222233;
-  --text: #e0e0e8;
-  --text-muted: #8888a0;
-  --text-dim: #555566;
-  --accent: #7b9fff;
-  --danger: #ef4444;
-  --warning: #eab308;
-  --success: #22c55e;
+  --bg: #09090b;
+  --surface: #111113;
+  --surface-hover: #18181b;
+  --border: #27272a;
+  --border-hover: #3f3f46;
+  --text: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-dim: #52525b;
+  --accent: #818cf8;
+  --accent-hover: #6366f1;
+  --accent-glow: #818cf820;
+  --danger: #f87171;
+  --danger-bg: #f8717110;
+  --warning: #fbbf24;
+  --warning-bg: #fbbf2410;
+  --success: #34d399;
+  --success-bg: #34d39910;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-geist-sans), -apple-system, sans-serif;
+  font-family: var(--font-geist-sans), -apple-system, "Segoe UI", sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
   color: var(--accent);
   text-decoration: none;
+}
+
+/* Smooth transitions */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, opacity;
+  transition-duration: 0.15s;
+  transition-timing-function: ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+/* Select styling */
+select {
+  outline: none;
+}
+select:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+/* Button hover */
+button:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+/* Checkbox custom */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+input[type="checkbox"]:checked {
+  background: var(--success);
+  border-color: var(--success);
+}
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  border: solid #09090b;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+input[type="checkbox"]:hover:not(:checked) {
+  border-color: var(--text-dim);
+}
+
+/* Link cards */
+.link-card {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.2s ease;
+}
+.link-card:hover {
+  border-color: var(--border-hover);
+  background: var(--surface-hover);
+  transform: translateY(-1px);
 }
