@@ -19,6 +19,22 @@ export const metadata = {
       "naver-site-verification": "f8cae595ddcac544fceff159c1d65bfb4b651b30",
     },
   },
+  metadataBase: new URL("https://sahu.kr"),
+  openGraph: {
+    title: "사후(SAHU) — 사망 후 행정 처리 가이드",
+    description:
+      "사망신고, 상속, 은행, 보험, 세금 등 사망 후 해야 할 모든 행정 절차를 체크리스트로 관리하세요.",
+    url: "https://sahu.kr",
+    siteName: "사후(SAHU)",
+    locale: "ko_KR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "사후(SAHU) — 사망 후 행정 처리 가이드",
+    description:
+      "사망신고, 상속, 은행, 보험, 세금 등 사망 후 해야 할 모든 행정 절차를 체크리스트로 관리하세요.",
+  },
   keywords: [
     "사망 후 해야할 일",
     "사망신고 방법",
