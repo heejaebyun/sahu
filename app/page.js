@@ -926,166 +926,173 @@ export default function Home() {
         );
       })}
 
-      {/* 전문가 상담 신청 */}
-      <div
-        style={{
-          background: "linear-gradient(135deg, var(--accent-glow), var(--surface))",
-          border: "1px solid var(--accent)",
-          borderRadius: 16,
-          padding: "24px",
-          marginBottom: 16,
-          marginTop: 8,
-        }}
-      >
-        {consultStatus === "done" ? (
-          <div style={{ textAlign: "center", padding: "12px 0" }}>
-            <div style={{ fontSize: 20, marginBottom: 8 }}>✓</div>
-            <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>신청이 완료되었습니다</div>
-            <div style={{ fontSize: 13, color: "var(--text-secondary)" }}>
-              영업일 기준 1일 이내에 연락드리겠습니다.
-            </div>
-          </div>
-        ) : !showConsult ? (
+      {/* 플로팅 상담 버튼 */}
+      {consultStatus !== "done" && !showConsult && (
+        <button
+          onClick={() => setShowConsult(true)}
+          style={{
+            position: "fixed",
+            bottom: 24,
+            right: 24,
+            background: "linear-gradient(135deg, var(--accent), var(--accent-hover))",
+            color: "#fff",
+            border: "none",
+            borderRadius: 50,
+            padding: "14px 22px",
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: "pointer",
+            boxShadow: "0 4px 20px rgba(129, 140, 248, 0.4)",
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <span style={{ fontSize: 16 }}>💬</span>
+          전문가 상담
+        </button>
+      )}
+
+      {/* 상담 신청 모달 */}
+      {showConsult && (
+        <>
           <div
-            style={{ cursor: "pointer" }}
-            onClick={() => setShowConsult(true)}
+            onClick={() => consultStatus !== "sending" && setShowConsult(false)}
+            style={{
+              position: "fixed",
+              top: 0, left: 0, right: 0, bottom: 0,
+              background: "rgba(0,0,0,0.6)",
+              zIndex: 1001,
+            }}
+          />
+          <div
+            style={{
+              position: "fixed",
+              bottom: 0, left: 0, right: 0,
+              background: "var(--surface)",
+              borderRadius: "20px 20px 0 0",
+              padding: "28px 24px 36px",
+              zIndex: 1002,
+              maxHeight: "85vh",
+              overflowY: "auto",
+              boxShadow: "0 -4px 30px rgba(0,0,0,0.3)",
+            }}
           >
-            <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 6 }}>
-              절차가 복잡하신가요?
-            </div>
-            <div style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 14, lineHeight: 1.6 }}>
-              상속세 신고, 상속포기 등 전문가 도움이 필요하시면 무료로 상담 연결해드립니다.
-            </div>
-            <button
-              style={{
-                width: "100%",
-                padding: "12px",
-                fontSize: 14,
-                fontWeight: 600,
-                background: "linear-gradient(135deg, var(--accent), var(--accent-hover))",
-                color: "#fff",
-                border: "none",
-                borderRadius: 10,
-                cursor: "pointer",
-              }}
-            >
-              전문가 상담 신청 (무료)
-            </button>
-          </div>
-        ) : (
-          <div>
-            <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 16 }}>
-              전문가 상담 신청
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <input
-                type="text"
-                placeholder="이름 *"
-                value={consultForm.name}
-                onChange={(e) => setConsultForm({ ...consultForm, name: e.target.value })}
-                style={{
-                  padding: "12px 14px",
-                  fontSize: 14,
-                  background: "var(--bg)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 10,
-                  color: "var(--text)",
-                }}
-              />
-              <input
-                type="tel"
-                placeholder="연락처 * (예: 010-1234-5678)"
-                value={consultForm.phone}
-                onChange={(e) => setConsultForm({ ...consultForm, phone: e.target.value })}
-                style={{
-                  padding: "12px 14px",
-                  fontSize: 14,
-                  background: "var(--bg)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 10,
-                  color: "var(--text)",
-                }}
-              />
-              <select
-                value={consultForm.needs}
-                onChange={(e) => setConsultForm({ ...consultForm, needs: e.target.value })}
-                style={{
-                  padding: "12px 14px",
-                  fontSize: 14,
-                  background: "var(--bg)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 10,
-                  color: consultForm.needs ? "var(--text)" : "var(--text-dim)",
-                }}
-              >
-                <option value="">필요한 서비스 선택</option>
-                <option value="상속세 신고">상속세 신고</option>
-                <option value="상속포기/한정승인">상속포기 / 한정승인</option>
-                <option value="부동산 상속등기">부동산 상속등기</option>
-                <option value="재산 조회/정리">재산 조회 / 정리</option>
-                <option value="기타">기타</option>
-              </select>
-              <textarea
-                placeholder="상황을 간단히 알려주세요 (선택)"
-                value={consultForm.detail}
-                onChange={(e) => setConsultForm({ ...consultForm, detail: e.target.value })}
-                rows={3}
-                style={{
-                  padding: "12px 14px",
-                  fontSize: 14,
-                  background: "var(--bg)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 10,
-                  color: "var(--text)",
-                  resize: "vertical",
-                }}
-              />
-              <div style={{ display: "flex", gap: 8 }}>
+            {consultStatus === "done" ? (
+              <div style={{ textAlign: "center", padding: "20px 0" }}>
+                <div style={{ fontSize: 28, marginBottom: 12 }}>✓</div>
+                <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 6 }}>신청이 완료되었습니다</div>
+                <div style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 20 }}>
+                  영업일 기준 1일 이내에 연락드리겠습니다.
+                </div>
                 <button
                   onClick={() => setShowConsult(false)}
                   style={{
-                    flex: 1,
-                    padding: "12px",
+                    padding: "12px 32px",
                     fontSize: 14,
-                    background: "transparent",
-                    border: "1px solid var(--border)",
+                    background: "var(--accent)",
+                    color: "#fff",
+                    border: "none",
                     borderRadius: 10,
-                    color: "var(--text-dim)",
                     cursor: "pointer",
                   }}
                 >
-                  취소
-                </button>
-                <button
-                  onClick={handleConsultSubmit}
-                  disabled={!consultForm.name || !consultForm.phone || consultStatus === "sending"}
-                  style={{
-                    flex: 2,
-                    padding: "12px",
-                    fontSize: 14,
-                    fontWeight: 600,
-                    background:
-                      consultForm.name && consultForm.phone
-                        ? "linear-gradient(135deg, var(--accent), var(--accent-hover))"
-                        : "var(--surface-hover)",
-                    color: consultForm.name && consultForm.phone ? "#fff" : "var(--text-dim)",
-                    border: "none",
-                    borderRadius: 10,
-                    cursor: consultForm.name && consultForm.phone ? "pointer" : "not-allowed",
-                  }}
-                >
-                  {consultStatus === "sending" ? "전송 중..." : "신청하기"}
+                  닫기
                 </button>
               </div>
-              {consultStatus === "error" && (
-                <div style={{ fontSize: 12, color: "var(--danger)", textAlign: "center" }}>
-                  전송에 실패했습니다. 잠시 후 다시 시도해주세요.
+            ) : (
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                  <div style={{ fontSize: 17, fontWeight: 700 }}>전문가 상담 신청</div>
+                  <button
+                    onClick={() => setShowConsult(false)}
+                    style={{ background: "none", border: "none", color: "var(--text-dim)", fontSize: 20, cursor: "pointer" }}
+                  >
+                    ✕
+                  </button>
                 </div>
-              )}
-            </div>
+                <div style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 20, lineHeight: 1.6 }}>
+                  상속세 신고, 상속포기 등 전문가 도움이 필요하시면 무료로 상담 연결해드립니다.
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <input
+                    type="text"
+                    placeholder="이름 *"
+                    value={consultForm.name}
+                    onChange={(e) => setConsultForm({ ...consultForm, name: e.target.value })}
+                    style={{
+                      padding: "14px 16px", fontSize: 15,
+                      background: "var(--bg)", border: "1px solid var(--border)",
+                      borderRadius: 12, color: "var(--text)",
+                    }}
+                  />
+                  <input
+                    type="tel"
+                    placeholder="연락처 * (예: 010-1234-5678)"
+                    value={consultForm.phone}
+                    onChange={(e) => setConsultForm({ ...consultForm, phone: e.target.value })}
+                    style={{
+                      padding: "14px 16px", fontSize: 15,
+                      background: "var(--bg)", border: "1px solid var(--border)",
+                      borderRadius: 12, color: "var(--text)",
+                    }}
+                  />
+                  <select
+                    value={consultForm.needs}
+                    onChange={(e) => setConsultForm({ ...consultForm, needs: e.target.value })}
+                    style={{
+                      padding: "14px 16px", fontSize: 15,
+                      background: "var(--bg)", border: "1px solid var(--border)",
+                      borderRadius: 12,
+                      color: consultForm.needs ? "var(--text)" : "var(--text-dim)",
+                    }}
+                  >
+                    <option value="">필요한 서비스 선택</option>
+                    <option value="상속세 신고">상속세 신고</option>
+                    <option value="상속포기/한정승인">상속포기 / 한정승인</option>
+                    <option value="부동산 상속등기">부동산 상속등기</option>
+                    <option value="재산 조회/정리">재산 조회 / 정리</option>
+                    <option value="기타">기타</option>
+                  </select>
+                  <textarea
+                    placeholder="상황을 간단히 알려주세요 (선택)"
+                    value={consultForm.detail}
+                    onChange={(e) => setConsultForm({ ...consultForm, detail: e.target.value })}
+                    rows={3}
+                    style={{
+                      padding: "14px 16px", fontSize: 15,
+                      background: "var(--bg)", border: "1px solid var(--border)",
+                      borderRadius: 12, color: "var(--text)", resize: "vertical",
+                    }}
+                  />
+                  <button
+                    onClick={handleConsultSubmit}
+                    disabled={!consultForm.name || !consultForm.phone || consultStatus === "sending"}
+                    style={{
+                      width: "100%", padding: "14px", fontSize: 15, fontWeight: 600,
+                      background: consultForm.name && consultForm.phone
+                        ? "linear-gradient(135deg, var(--accent), var(--accent-hover))"
+                        : "var(--surface-hover)",
+                      color: consultForm.name && consultForm.phone ? "#fff" : "var(--text-dim)",
+                      border: "none", borderRadius: 12,
+                      cursor: consultForm.name && consultForm.phone ? "pointer" : "not-allowed",
+                      marginTop: 4,
+                    }}
+                  >
+                    {consultStatus === "sending" ? "전송 중..." : "상담 신청하기 (무료)"}
+                  </button>
+                  {consultStatus === "error" && (
+                    <div style={{ fontSize: 12, color: "var(--danger)", textAlign: "center" }}>
+                      전송에 실패했습니다. 잠시 후 다시 시도해주세요.
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
 
       {/* 하단 링크 */}
       <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
