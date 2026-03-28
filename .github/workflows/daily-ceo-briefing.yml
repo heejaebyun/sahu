@@ -1,0 +1,26 @@
+name: Daily CEO Briefing
+
+on:
+  schedule:
+    # 매일 한국시간 오후 10시 (UTC 13시)
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+
+jobs:
+  briefing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm ci
+
+      - name: Run CEO Agent
+        env:
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+        run: |
+          echo "$GOOGLE_CREDENTIALS_JSON" > /tmp/google-credentials.json
+          GOOGLE_CREDENTIALS_PATH=/tmp/google-credentials.json node agents/ceo-agent.mjs

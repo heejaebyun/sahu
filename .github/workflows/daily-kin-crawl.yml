@@ -1,0 +1,26 @@
+name: Daily 지식인 Crawl
+
+on:
+  schedule:
+    # 매일 한국시간 오후 9시 (UTC 12시) — CEO 브리핑 1시간 전 실행
+    - cron: '0 12 * * *'
+  workflow_dispatch: # 수동 실행 가능
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm ci
+
+      - name: Run daily crawl
+        env:
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+        run: |
+          echo "$GOOGLE_CREDENTIALS_JSON" > /tmp/google-credentials.json
+          GOOGLE_CREDENTIALS_PATH=/tmp/google-credentials.json node scripts/daily-kin-crawl.mjs

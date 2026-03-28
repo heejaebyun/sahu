@@ -1,0 +1,456 @@
+{
+  "date": "2026-03-28",
+  "opsResults": [
+    {
+      "name": "지식인 크롤링",
+      "status": "success",
+      "summary": "120개 신규 질문 상세 크롤링...\n\n중복 제거 후 새 질문 없음. 종료."
+    }
+  ],
+  "agentReports": {
+    "마케팅": {
+      "agent": "마케팅",
+      "date": "2026-03-28",
+      "currentStatus": {
+        "지식인_수집_질문": 184,
+        "등급_분포": {
+          "A": 0,
+          "B": 64,
+          "C": 108,
+          "D": 9,
+          "X": 3
+        },
+        "미채택_답변기회": 0
+      },
+      "ideas": [
+        {
+          "id": "mkt-001",
+          "title": "네이버 블로그 발행 루틴 확립",
+          "description": "하루 1개씩 10일간 발행 → 이후 주 2회로 전환. 발행 3주 후 키워드별 순위 체크.",
+          "priority": "high",
+          "effort": "low",
+          "expectedImpact": "네이버 검색 유입 시작 (2-4주 후)"
+        },
+        {
+          "id": "mkt-002",
+          "title": "지식인 답변 재개",
+          "description": "비정상 접근 차단 해제 후 링크 없이 답변 먼저 시작. 신뢰도 쌓은 후 sahu.kr 링크 추가.",
+          "priority": "high",
+          "effort": "medium",
+          "expectedImpact": "직접 유입 + 백링크"
+        },
+        {
+          "id": "mkt-003",
+          "title": "검색 키워드 확장",
+          "description": "현재 12개 키워드 외에 '장례 후 해야할 일', '부모님 돌아가시면', '사망 후 연금' 등 롱테일 키워드 추가.",
+          "priority": "medium",
+          "effort": "low",
+          "expectedImpact": "크롤링 범위 확대, 신규 콘텐츠 주제 발굴"
+        },
+        {
+          "id": "mkt-004",
+          "title": "네이버 플레이스/지도 등록",
+          "description": "사후(SAHU)를 온라인 서비스로 네이버 플레이스에 등록 가능한지 확인.",
+          "priority": "low",
+          "effort": "low",
+          "expectedImpact": "브랜드 검색 시 노출 강화"
+        }
+      ],
+      "requests": [
+        {
+          "to": "CTO",
+          "request": "sahu.kr 방문자 추적 (Vercel Analytics 데이터 접근) 방법 확인"
+        },
+        {
+          "to": "리서치",
+          "request": "경쟁 서비스 조사 — 한국에 유사 서비스 있는지 확인"
+        }
+      ]
+    },
+    "CTO": {
+      "agent": "CTO",
+      "error": "The requested module 'fs' does not provide an export named 'execSync'"
+    },
+    "전략": {
+      "agent": "전략",
+      "date": "2026-03-28",
+      "currentStatus": {
+        "phase": "Phase 1 — 트래픽 확보",
+        "목표": "월 5,000 방문자 달성",
+        "현재": "SEO 인덱싱 대기 + 콘텐츠 발행 시작",
+        "runway": "비용 0원 (무료 도구만 사용 중)"
+      },
+      "ideas": [
+        {
+          "id": "str-001",
+          "title": "Phase 1→2 전환 기준 명확화",
+          "description": "Phase 1(트래픽) → Phase 2(수익화) 전환 기준: 월 방문자 3,000명 OR 상담 문의 주 5건. 둘 중 하나 달성 시 세무사 매칭 시작.",
+          "priority": "high",
+          "effort": "low",
+          "expectedImpact": "명확한 마일스톤 → 의사결정 속도 향상"
+        },
+        {
+          "id": "str-002",
+          "title": "경쟁 우위 강화 — 기한 자동 계산",
+          "description": "블로그/지식인 답변에서 sahu.kr의 핵심 차별점은 '사망일 입력 → 기한 자동 계산'. 모든 콘텐츠에서 이 기능을 강조.",
+          "priority": "high",
+          "effort": "low",
+          "expectedImpact": "전환율 향상 (방문 → 서비스 사용)"
+        },
+        {
+          "id": "str-003",
+          "title": "B2B 타겟 탐색 — 장례식장",
+          "description": "장례식장에서 유가족에게 사후 행정 가이드 전달. 장례식장 입장에서는 고객 서비스 향상. QR코드가 포함된 안내문 제작 → 장례식장에 무료 배포.",
+          "priority": "medium",
+          "effort": "medium",
+          "expectedImpact": "B2B 채널 확보 + 안정적 유입"
+        },
+        {
+          "id": "str-004",
+          "title": "데이터 자산 구축",
+          "description": "지식인 크롤링 데이터가 쌓이면 '사망 후 행정 관련 FAQ' 데이터셋이 됨. 이 데이터로 AI 챗봇(사후 행정 전문) 구축 가능.",
+          "priority": "low",
+          "effort": "high",
+          "expectedImpact": "장기 경쟁 우위 + 제품 확장"
+        }
+      ],
+      "requests": [
+        {
+          "to": "리서치",
+          "request": "한국 장례식장 수 + 주요 프랜차이즈 장례식장 목록 조사"
+        },
+        {
+          "to": "마케팅",
+          "request": "현재 콘텐츠에서 '기한 자동 계산' 기능 언급 비율 확인"
+        }
+      ]
+    },
+    "비즈니스": {
+      "agent": "비즈니스",
+      "date": "2026-03-28",
+      "currentStatus": {
+        "매출": "0원",
+        "비용": "0원 (도메인 연간 ~2만원 제외)",
+        "수익모델": "미구현 (Phase 1 — 트래픽 확보 중)"
+      },
+      "ideas": [
+        {
+          "id": "biz-001",
+          "title": "세무사 매칭 수익 모델 설계",
+          "description": "세무사에게 월 구독료(10~30만원) 또는 건당 수수료(5~10만원). 초기에는 무료로 연결해서 사례 만들고, 이후 과금.",
+          "priority": "medium",
+          "effort": "low",
+          "expectedImpact": "수익화 로드맵 확정"
+        },
+        {
+          "id": "biz-002",
+          "title": "장례식장 B2B 파일럿",
+          "description": "근처 장례식장 3곳에 직접 방문. sahu.kr QR코드 안내문 무료 제공 제안. 유가족 반응 데이터 수집.",
+          "priority": "medium",
+          "effort": "medium",
+          "expectedImpact": "B2B 채널 검증"
+        },
+        {
+          "id": "biz-003",
+          "title": "예비창업패키지/초기창업패키지 지원",
+          "description": "중기부 창업지원사업 신청. 사회문제 해결형으로 분류 가능. 최대 1억원 지원.",
+          "priority": "low",
+          "effort": "high",
+          "expectedImpact": "자금 확보 + 신뢰도"
+        }
+      ],
+      "kpi": {
+        "weekly": {
+          "블로그_발행수": {
+            "target": 7,
+            "unit": "개/주"
+          },
+          "지식인_답변수": {
+            "target": 5,
+            "unit": "개/주"
+          },
+          "사이트_방문자": {
+            "target": 100,
+            "unit": "명/주"
+          }
+        },
+        "monthly": {
+          "검색_노출수": {
+            "target": 1000,
+            "unit": "회/월"
+          },
+          "상담_문의": {
+            "target": 0,
+            "unit": "건/월",
+            "note": "Phase 2에서 시작"
+          }
+        }
+      },
+      "requests": [
+        {
+          "to": "리서치",
+          "request": "세무사 상속세 신고 수수료 시장 가격 조사"
+        },
+        {
+          "to": "CTO",
+          "request": "상담 신청 폼 기술 검토 (Formspree vs Google Forms vs 자체 구현)"
+        }
+      ]
+    },
+    "운영": {
+      "agent": "운영",
+      "date": "2026-03-28",
+      "currentStatus": {
+        "자동화_완료": [
+          "지식인 크롤링",
+          "성과 측정",
+          "블로그 콘텐츠 생성",
+          "브런치 콘텐츠 생성"
+        ],
+        "자동화_대기": [
+          "GitHub Actions cron (secrets 미등록)"
+        ],
+        "수동_필요": [
+          "블로그 발행",
+          "지식인 답변",
+          "브런치 발행"
+        ]
+      },
+      "ideas": [
+        {
+          "id": "ops-001",
+          "title": "GitHub Actions 활성화",
+          "description": "GOOGLE_CREDENTIALS_JSON secret 등록하면 크롤링 완전 자동화",
+          "priority": "high",
+          "effort": "low"
+        }
+      ],
+      "requests": [
+        {
+          "to": "CEO",
+          "request": "GitHub secrets 등록은 user 수동 작업 필요 — 리마인드 요청"
+        }
+      ]
+    },
+    "리서치": {
+      "agent": "리서치",
+      "date": "2026-03-28",
+      "queue": [
+        {
+          "id": "res-001",
+          "requestedBy": "마케팅",
+          "topic": "한국 내 사망 후 행정 가이드 경쟁 서비스 조사",
+          "status": "pending",
+          "result": null
+        },
+        {
+          "id": "res-002",
+          "requestedBy": "전략",
+          "topic": "한국 장례식장 수 + 주요 프랜차이즈 장례식장 목록",
+          "status": "pending",
+          "result": null
+        },
+        {
+          "id": "res-003",
+          "requestedBy": "비즈니스",
+          "topic": "세무사 상속세 신고 수수료 시장 가격",
+          "status": "pending",
+          "result": null
+        },
+        {
+          "id": "res-004",
+          "requestedBy": "마케팅",
+          "topic": "사망 관련 네이버 검색 키워드 월간 검색량",
+          "status": "pending",
+          "result": null
+        }
+      ],
+      "completedCount": 0,
+      "pendingCount": 4,
+      "note": "리서치 에이전트는 웹 검색이 필요한 항목이 많아 Claude Code 세션에서 실행 시 가장 효과적. CEO 에이전트가 우선순위 결정 후 호출."
+    }
+  },
+  "synthesis": {
+    "allIdeas": [
+      {
+        "from": "마케팅",
+        "id": "mkt-003",
+        "title": "검색 키워드 확장",
+        "description": "현재 12개 키워드 외에 '장례 후 해야할 일', '부모님 돌아가시면', '사망 후 연금' 등 롱테일 키워드 추가.",
+        "priority": "medium",
+        "effort": "low",
+        "expectedImpact": "크롤링 범위 확대, 신규 콘텐츠 주제 발굴"
+      },
+      {
+        "from": "전략",
+        "id": "str-003",
+        "title": "B2B 타겟 탐색 — 장례식장",
+        "description": "장례식장에서 유가족에게 사후 행정 가이드 전달. 장례식장 입장에서는 고객 서비스 향상. QR코드가 포함된 안내문 제작 → 장례식장에 무료 배포.",
+        "priority": "medium",
+        "effort": "medium",
+        "expectedImpact": "B2B 채널 확보 + 안정적 유입"
+      },
+      {
+        "from": "비즈니스",
+        "id": "biz-001",
+        "title": "세무사 매칭 수익 모델 설계",
+        "description": "세무사에게 월 구독료(10~30만원) 또는 건당 수수료(5~10만원). 초기에는 무료로 연결해서 사례 만들고, 이후 과금.",
+        "priority": "medium",
+        "effort": "low",
+        "expectedImpact": "수익화 로드맵 확정"
+      },
+      {
+        "from": "비즈니스",
+        "id": "biz-002",
+        "title": "장례식장 B2B 파일럿",
+        "description": "근처 장례식장 3곳에 직접 방문. sahu.kr QR코드 안내문 무료 제공 제안. 유가족 반응 데이터 수집.",
+        "priority": "medium",
+        "effort": "medium",
+        "expectedImpact": "B2B 채널 검증"
+      },
+      {
+        "from": "마케팅",
+        "id": "mkt-001",
+        "title": "네이버 블로그 발행 루틴 확립",
+        "description": "하루 1개씩 10일간 발행 → 이후 주 2회로 전환. 발행 3주 후 키워드별 순위 체크.",
+        "priority": "high",
+        "effort": "low",
+        "expectedImpact": "네이버 검색 유입 시작 (2-4주 후)"
+      },
+      {
+        "from": "마케팅",
+        "id": "mkt-002",
+        "title": "지식인 답변 재개",
+        "description": "비정상 접근 차단 해제 후 링크 없이 답변 먼저 시작. 신뢰도 쌓은 후 sahu.kr 링크 추가.",
+        "priority": "high",
+        "effort": "medium",
+        "expectedImpact": "직접 유입 + 백링크"
+      },
+      {
+        "from": "마케팅",
+        "id": "mkt-004",
+        "title": "네이버 플레이스/지도 등록",
+        "description": "사후(SAHU)를 온라인 서비스로 네이버 플레이스에 등록 가능한지 확인.",
+        "priority": "low",
+        "effort": "low",
+        "expectedImpact": "브랜드 검색 시 노출 강화"
+      },
+      {
+        "from": "전략",
+        "id": "str-001",
+        "title": "Phase 1→2 전환 기준 명확화",
+        "description": "Phase 1(트래픽) → Phase 2(수익화) 전환 기준: 월 방문자 3,000명 OR 상담 문의 주 5건. 둘 중 하나 달성 시 세무사 매칭 시작.",
+        "priority": "high",
+        "effort": "low",
+        "expectedImpact": "명확한 마일스톤 → 의사결정 속도 향상"
+      },
+      {
+        "from": "전략",
+        "id": "str-002",
+        "title": "경쟁 우위 강화 — 기한 자동 계산",
+        "description": "블로그/지식인 답변에서 sahu.kr의 핵심 차별점은 '사망일 입력 → 기한 자동 계산'. 모든 콘텐츠에서 이 기능을 강조.",
+        "priority": "high",
+        "effort": "low",
+        "expectedImpact": "전환율 향상 (방문 → 서비스 사용)"
+      },
+      {
+        "from": "전략",
+        "id": "str-004",
+        "title": "데이터 자산 구축",
+        "description": "지식인 크롤링 데이터가 쌓이면 '사망 후 행정 관련 FAQ' 데이터셋이 됨. 이 데이터로 AI 챗봇(사후 행정 전문) 구축 가능.",
+        "priority": "low",
+        "effort": "high",
+        "expectedImpact": "장기 경쟁 우위 + 제품 확장"
+      },
+      {
+        "from": "비즈니스",
+        "id": "biz-003",
+        "title": "예비창업패키지/초기창업패키지 지원",
+        "description": "중기부 창업지원사업 신청. 사회문제 해결형으로 분류 가능. 최대 1억원 지원.",
+        "priority": "low",
+        "effort": "high",
+        "expectedImpact": "자금 확보 + 신뢰도"
+      },
+      {
+        "from": "운영",
+        "id": "ops-001",
+        "title": "GitHub Actions 활성화",
+        "description": "GOOGLE_CREDENTIALS_JSON secret 등록하면 크롤링 완전 자동화",
+        "priority": "high",
+        "effort": "low"
+      }
+    ],
+    "crossRequests": [
+      {
+        "from": "마케팅",
+        "to": "CTO",
+        "request": "sahu.kr 방문자 추적 (Vercel Analytics 데이터 접근) 방법 확인"
+      },
+      {
+        "from": "마케팅",
+        "to": "리서치",
+        "request": "경쟁 서비스 조사 — 한국에 유사 서비스 있는지 확인"
+      },
+      {
+        "from": "전략",
+        "to": "리서치",
+        "request": "한국 장례식장 수 + 주요 프랜차이즈 장례식장 목록 조사"
+      },
+      {
+        "from": "전략",
+        "to": "마케팅",
+        "request": "현재 콘텐츠에서 '기한 자동 계산' 기능 언급 비율 확인"
+      },
+      {
+        "from": "비즈니스",
+        "to": "리서치",
+        "request": "세무사 상속세 신고 수수료 시장 가격 조사"
+      },
+      {
+        "from": "비즈니스",
+        "to": "CTO",
+        "request": "상담 신청 폼 기술 검토 (Formspree vs Google Forms vs 자체 구현)"
+      },
+      {
+        "from": "운영",
+        "to": "CEO",
+        "request": "GitHub secrets 등록은 user 수동 작업 필요 — 리마인드 요청"
+      }
+    ],
+    "topPriority": [
+      {
+        "from": "마케팅",
+        "id": "mkt-001",
+        "title": "네이버 블로그 발행 루틴 확립",
+        "description": "하루 1개씩 10일간 발행 → 이후 주 2회로 전환. 발행 3주 후 키워드별 순위 체크.",
+        "priority": "high",
+        "effort": "low",
+        "expectedImpact": "네이버 검색 유입 시작 (2-4주 후)"
+      },
+      {
+        "from": "마케팅",
+        "id": "mkt-002",
+        "title": "지식인 답변 재개",
+        "description": "비정상 접근 차단 해제 후 링크 없이 답변 먼저 시작. 신뢰도 쌓은 후 sahu.kr 링크 추가.",
+        "priority": "high",
+        "effort": "medium",
+        "expectedImpact": "직접 유입 + 백링크"
+      },
+      {
+        "from": "전략",
+        "id": "str-001",
+        "title": "Phase 1→2 전환 기준 명확화",
+        "description": "Phase 1(트래픽) → Phase 2(수익화) 전환 기준: 월 방문자 3,000명 OR 상담 문의 주 5건. 둘 중 하나 달성 시 세무사 매칭 시작.",
+        "priority": "high",
+        "effort": "low",
+        "expectedImpact": "명확한 마일스톤 → 의사결정 속도 향상"
+      }
+    ]
+  },
+  "manualActions": [
+    "🔴 네이버 블로그 글 1개 발행 (하루 1개 루틴)",
+    "🟡 지식인 A/B등급 질문에 답변 2-3개",
+    "🟡 브런치 작가 승인 확인",
+    "⚪ GitHub Settings → Secrets에 GOOGLE_CREDENTIALS_JSON 등록"
+  ]
+}

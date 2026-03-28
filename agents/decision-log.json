@@ -1,0 +1,60 @@
+{
+  "decisions": [
+    {
+      "id": 1,
+      "date": "2026-03-28",
+      "category": "channel",
+      "question": "블로그 플랫폼 선택",
+      "options": ["네이버 블로그만", "브런치만", "둘 다", "티스토리"],
+      "decision": "둘 다 (네이버 블로그 + 브런치)",
+      "reason": "네이버는 네이버 검색, 브런치는 구글 SEO 커버",
+      "decidedBy": "user"
+    },
+    {
+      "id": 2,
+      "date": "2026-03-28",
+      "category": "channel",
+      "question": "네이버 카페 운영 여부",
+      "options": ["운영", "안함"],
+      "decision": "안함",
+      "reason": "1인 운영으로 카페 활성화 불가, 관리 부담 큼",
+      "decidedBy": "user"
+    },
+    {
+      "id": 3,
+      "date": "2026-03-28",
+      "category": "content",
+      "question": "블로그 콘텐츠 톤",
+      "options": ["정보 나열형", "에세이형", "채널별 분리"],
+      "decision": "채널별 분리 (네이버=정보형, 브런치=에세이형)",
+      "reason": "각 플랫폼 특성에 맞춤",
+      "decidedBy": "user"
+    },
+    {
+      "id": 4,
+      "date": "2026-03-28",
+      "category": "operation",
+      "question": "운영 방식",
+      "options": ["직접 운영", "일부 자동화", "전면 에이전트 운영"],
+      "decision": "전면 에이전트 운영 (의사결정만 직접)",
+      "reason": "AI 80% 운영 원칙, CEO 에이전트가 총괄",
+      "decidedBy": "user"
+    },
+    {
+      "id": 5,
+      "date": "2026-03-28",
+      "category": "monetization",
+      "question": "수익화 방향",
+      "options": ["광고", "전문가 매칭", "B2B", "구독"],
+      "decision": "전문가 매칭 (세무사/법무사) → B2B → 보험사 제휴",
+      "reason": "트래픽 먼저 확보 후 매칭 수수료 모델",
+      "decidedBy": "user"
+    }
+  ],
+  "patterns": {
+    "channel": "다채널 운영하되 관리 부담 최소화. 자동화 불가능한 채널은 제외.",
+    "content": "플랫폼별 톤 분리. 자동 생성 후 수동 발행.",
+    "operation": "자동화 우선. 수동은 발행/답변/협의만.",
+    "monetization": "트래픽 선행 → 수익화 후행. 단계적 확장."
+  }
+}
