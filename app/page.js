@@ -72,7 +72,7 @@ function DeadlineBadge({ item, diffDays, deathDate }) {
   );
 }
 
-function CheckItem({ item, checked, onToggle, diffDays }) {
+function CheckItem({ item, checked, onToggle, diffDays, deathDate }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -728,6 +728,7 @@ export default function Home() {
                 checked={!!checkedItems[item.id]}
                 onToggle={toggleItem}
                 diffDays={diffDays}
+                deathDate={deathDate}
               />
             ))}
           </section>
