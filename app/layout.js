@@ -15,6 +15,9 @@ export const metadata = {
     "가족을 잃은 후 해야 할 행정 절차를 단계별로 안내합니다. 사망신고, 상속, 은행, 보험, 세금 등 모든 절차를 체크리스트로 관리하세요.",
   verification: {
     google: "MWCeWKB-iUh9gi_4BySFnKl_AI8QhiV6h3UGAKiSXEE",
+    other: {
+      "naver-site-verification": "f8cae595ddcac544fceff159c1d65bfb4b651b30",
+    },
   },
   keywords: [
     "사망 후 해야할 일",
