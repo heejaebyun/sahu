@@ -274,6 +274,44 @@ function CheckItem({ item, checked, onToggle, diffDays, deathDate }) {
               ))}
             </div>
           )}
+
+          {item.links && item.links.length > 0 && (
+            <div>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: "var(--text-dim)",
+                  marginBottom: 5,
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                바로가기
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {item.links.map((link) => (
+                  <a
+                    key={link.url}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                      fontSize: 13,
+                      color: "var(--accent)",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    <span style={{ fontSize: 10 }}>→</span>
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -353,7 +391,7 @@ function DatePicker({ value, onChange }) {
     } else {
       onChange("");
     }
-  }, [year, month, day]);
+  }, [year, month, day, onChange]);
 
   useEffect(() => {
     if (value) {
@@ -362,7 +400,7 @@ function DatePicker({ value, onChange }) {
       setMonth(p[1] ? String(Number(p[1])) : "");
       setDay(p[2] ? String(Number(p[2])) : "");
     }
-  }, []);
+  }, [value]);
 
   const selectStyle = {
     flex: 1,
@@ -430,8 +468,13 @@ export default function Home() {
   const [showConsult, setShowConsult] = useState(false);
   const [consultForm, setConsultForm] = useState({ name: "", phone: "", needs: "", detail: "" });
   const [consultStatus, setConsultStatus] = useState(null); // null | "sending" | "done" | "error"
+  const [consultSubmitted, setConsultSubmitted] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    if (localStorage.getItem("sahu-consult-done")) {
+      setConsultSubmitted(true);
+    }
     const saved = localStorage.getItem("sahu-data");
     if (saved) {
       try {
@@ -441,6 +484,7 @@ export default function Home() {
         if (data.deathDate) setStarted(true);
       } catch {}
     }
+    setLoaded(true);
   }, []);
 
   useEffect(() => {
@@ -493,6 +537,8 @@ export default function Home() {
       });
       if (res.ok) {
         setConsultStatus("done");
+        setConsultSubmitted(true);
+        localStorage.setItem("sahu-consult-done", "1");
       } else {
         setConsultStatus("error");
       }
@@ -509,6 +555,11 @@ export default function Home() {
       localStorage.removeItem("sahu-data");
     }
   };
+
+  // ── localStorage 로딩 전에는 빈 화면 (깜빡임 방지) ──
+  if (!loaded) {
+    return null;
+  }
 
   // ── 시작 화면 ──
   if (!started) {
@@ -927,7 +978,7 @@ export default function Home() {
       })}
 
       {/* 플로팅 상담 버튼 */}
-      {consultStatus !== "done" && !showConsult && (
+      {!consultSubmitted && !showConsult && (
         <button
           onClick={() => setShowConsult(true)}
           style={{

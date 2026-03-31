@@ -19,6 +19,9 @@ const KEYWORDS = [
   "상속세 신고",
   "사망진단서 발급",
   "유족연금 신청",
+  "장례 후 절차",
+  "사망 후 부동산",
+  "사망 후 자동차 명의변경",
 ];
 
 const ANSWER_TEMPLATES = {
@@ -248,6 +251,8 @@ async function main() {
   for (const q of unique) {
     const detail = await fetchDetail(q.link);
     const quality = qualityScore(detail, q.keyword);
+    // 키워드 화이트리스트 검증
+    if (!KEYWORDS.includes(q.keyword)) continue;
     enriched.push([
       quality.grade,
       quality.score,

@@ -54,9 +54,9 @@ export function generateReport() {
     },
   ];
 
+  // 완료: 상담 폼 자체 구현 완료 (플로팅 버튼 + Google Sheets 연동)
   report.requests = [
     { to: "리서치", request: "세무사 상속세 신고 수수료 시장 가격 조사" },
-    { to: "CTO", request: "상담 신청 폼 기술 검토 (Formspree vs Google Forms vs 자체 구현)" },
   ];
 
   return report;

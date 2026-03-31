@@ -38,8 +38,8 @@ a {
   text-decoration: none;
 }
 
-/* Smooth transitions */
-*, *::before, *::after {
+/* Smooth transitions — applied only to interactive elements */
+a, button, input, select, textarea, .link-card {
   transition-property: background-color, border-color, color, opacity;
   transition-duration: 0.15s;
   transition-timing-function: ease;

@@ -11,15 +11,24 @@ const CREDENTIALS_PATH = process.env.GOOGLE_CREDENTIALS_PATH || `${BASE}/google-
 import { execSync } from "child_process";
 import { writeFileSync } from "fs";
 
-const CLAUDE = "/Users/byunheejae/.vscode/extensions/anthropic.claude-code-2.1.86-darwin-arm64/resources/native-binary/claude";
+const CLAUDE = (() => {
+  try {
+    const whichResult = execSync('which claude 2>/dev/null', { encoding: "utf-8" }).trim();
+    if (whichResult) return whichResult;
+  } catch {}
+  try {
+    return execSync('ls -t /Users/byunheejae/.vscode/extensions/anthropic.claude-code-*-darwin-arm64/resources/native-binary/claude 2>/dev/null | head -1', { encoding: "utf-8" }).trim();
+  } catch {}
+  return "/Users/byunheejae/.local/bin/claude";
+})();
 
 function askClaude(prompt) {
   const tmpFile = `/tmp/sahu-consult-${Date.now()}.txt`;
   writeFileSync(tmpFile, prompt, "utf-8");
   try {
     return execSync(
-      `cat "${tmpFile}" | "${CLAUDE}" --print 2>/dev/null`,
-      { encoding: "utf-8", timeout: 60000, cwd: BASE }
+      `cat "${tmpFile}" | "${CLAUDE}" --print --model opus --effort max --allowedTools "WebSearch,WebFetch" 2>/dev/null`,
+      { encoding: "utf-8", timeout: 300000, cwd: BASE }
     ).trim();
   } catch {
     return "[해결방안 생성 실패]";

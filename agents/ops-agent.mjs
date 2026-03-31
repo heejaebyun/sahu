@@ -54,18 +54,9 @@ export function generateReport() {
       자동화_대기: ["GitHub Actions cron (secrets 미등록)"],
       수동_필요: ["블로그 발행", "지식인 답변", "브런치 발행"],
     },
-    ideas: [
-      {
-        id: "ops-001",
-        title: "GitHub Actions 활성화",
-        description: "GOOGLE_CREDENTIALS_JSON secret 등록하면 크롤링 완전 자동화",
-        priority: "high",
-        effort: "low",
-      },
-    ],
-    requests: [
-      { to: "CEO", request: "GitHub secrets 등록은 user 수동 작업 필요 — 리마인드 요청" },
-    ],
+    // 완료: GitHub Actions → 로컬 cron 확정 (결정 #7)
+    ideas: [],
+    requests: [],
   };
 }
 
