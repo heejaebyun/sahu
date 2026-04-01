@@ -129,9 +129,9 @@ export default function AgreementPage() {
   const [showPayment, setShowPayment] = useState(false);
   const [paymentClicked, setPaymentClicked] = useState(false);
 
-  // localStorage 자동 저장/복원
+  // sessionStorage 자동 저장/복원
   useEffect(() => {
-    const saved = localStorage.getItem("sahu-agreement");
+    const saved = sessionStorage.getItem("sahu-agreement");
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -142,7 +142,7 @@ export default function AgreementPage() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(
+    sessionStorage.setItem(
       "sahu-agreement",
       JSON.stringify({ formData, step })
     );
@@ -164,6 +164,40 @@ export default function AgreementPage() {
         }),
       });
     } catch {}
+  };
+
+  // 결제 제출 핸들러
+  const handlePaymentSubmit = async (method) => {
+    if (!formData.paymentEmail || !formData.paymentPhone || !formData.depositorName) return;
+
+    try {
+      const res = await fetch("/api/order/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.paymentEmail,
+          phone: formData.paymentPhone,
+          depositorName: formData.depositorName,
+          paymentMethod: method,
+          formData: {
+            deceased: formData.deceased,
+            heirs: formData.heirs,
+            assets: formData.assets,
+            document: formData.document,
+          },
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setFormData((p) => ({ ...p, orderNumber: data.orderNumber, selectedPaymentMethod: method }));
+        setPaymentClicked(true);
+      } else {
+        alert(data.error || "주문 생성에 실패했습니다.");
+      }
+    } catch {
+      alert("주문 생성 중 오류가 발생했습니다.");
+    }
   };
 
   // ── Step 1: 고인 정보 ──
@@ -772,7 +806,8 @@ export default function AgreementPage() {
             </div>
           )}
 
-          {!paymentClicked && !pdfUrl && (
+          {/* 미리보기 + 서류 완성하기 */}
+          {!showPayment && (
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <button
                 onClick={handleGeneratePDF}
@@ -781,59 +816,138 @@ export default function AgreementPage() {
               >
                 {isGenerating ? "미리보기 생성 중..." : "미리보기 확인하기 (무료)"}
               </button>
+
+              {pdfUrl && (
+                <div style={{ textAlign: "center", padding: 16, background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 8 }}>
+                  <p style={{ fontSize: 13, color: "#16a34a", fontWeight: 600, marginBottom: 8 }}>미리보기가 생성되었습니다</p>
+                  <a href={pdfUrl} download="상속재산분할협의서_미리보기.pdf" style={{ fontSize: 13, color: "#0f172a", textDecoration: "underline" }}>미리보기 PDF 다운로드</a>
+                  <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 8 }}>워터마크가 포함된 미리보기입니다. 원본은 결제 후 제공됩니다.</p>
+                </div>
+              )}
+
               <div style={{ display: "flex", gap: 12 }}>
                 <button onClick={prevStep} style={btnSecondary}>이전</button>
-                <button
-                  onClick={handlePaymentClick}
-                  style={btnPrimary}
-                >
-                  결제하고 원본 받기 (49,900원)
+                <button onClick={() => setShowPayment(true)} style={btnPrimary}>
+                  서류 완성하기 · 49,900원
                 </button>
               </div>
             </div>
           )}
 
-          {/* 결제 클릭 후 — 시스템 점검 메시지 (결제 의향 카운팅) */}
-          {paymentClicked && (
-            <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 10, padding: 24, marginTop: 16, textAlign: "center" }}>
-              <div style={{ fontSize: 24, marginBottom: 12 }}>🔧</div>
-              <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8, color: "#0f172a" }}>
-                결제 시스템 준비 중입니다
+          {/* ── 결제 모달 Step 1: 수령 정보 ── */}
+          {showPayment && !paymentClicked && (
+            <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 10, padding: 24 }}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 4, color: "#0f172a" }}>
+                완성된 원본 서류 수령 및 결제
               </h3>
-              <p style={{ fontSize: 14, color: "#64748b", lineHeight: 1.7, marginBottom: 16 }}>
-                현재 결제 시스템을 점검 중입니다. 빠른 시일 내에 오픈 예정입니다.
-                <br />아래 미리보기를 통해 문서를 먼저 확인하실 수 있습니다.
+              <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20, lineHeight: 1.6 }}>
+                결제 확인 즉시 보안 처리된 원본 PDF가 아래 이메일로 발송됩니다.
               </p>
-              <p style={{ fontSize: 13, color: "#94a3b8" }}>
-                문의: sahu.kr@gmail.com
-              </p>
-              {!pdfUrl && (
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div>
+                  <label style={labelStyle}>이메일 주소 (서류 수령용)</label>
+                  <input style={inputStyle} type="email" value={formData.paymentEmail || ""} onChange={(e) => setFormData((p) => ({ ...p, paymentEmail: e.target.value }))} placeholder="example@email.com" />
+                </div>
+                <div>
+                  <label style={labelStyle}>휴대폰 번호</label>
+                  <input style={inputStyle} type="tel" value={formData.paymentPhone || ""} onChange={(e) => setFormData((p) => ({ ...p, paymentPhone: e.target.value }))} placeholder="010-0000-0000" />
+                </div>
+                <div>
+                  <label style={labelStyle}>입금자 실명</label>
+                  <input style={inputStyle} value={formData.depositorName || ""} onChange={(e) => setFormData((p) => ({ ...p, depositorName: e.target.value }))} placeholder="실제 송금하시는 분의 이름" />
+                  <p style={{ fontSize: 12, color: "#dc2626", marginTop: 6, lineHeight: 1.5 }}>
+                    결제 확인은 입력하신 '입금자명'을 기준으로 매칭됩니다. 실제 송금하시는 분의 실명을 정확히 적어주세요.
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ marginTop: 20 }}>
+                <p style={{ fontSize: 13, fontWeight: 600, color: "#334155", marginBottom: 12 }}>결제 수단 선택</p>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  <button
+                    onClick={async () => {
+                      await handlePaymentSubmit("카카오페이");
+                      window.open("https://qr.kakaopay.com/Ej8kN1XiJ", "_blank");
+                    }}
+                    disabled={!formData.paymentEmail || !formData.paymentPhone || !formData.depositorName}
+                    style={{
+                      padding: "16px",
+                      fontSize: 15,
+                      fontWeight: 700,
+                      background: formData.paymentEmail && formData.paymentPhone && formData.depositorName ? "#FEE500" : "#e2e8f0",
+                      color: formData.paymentEmail && formData.paymentPhone && formData.depositorName ? "#191919" : "#94a3b8",
+                      border: "none",
+                      borderRadius: 8,
+                      cursor: formData.paymentEmail && formData.paymentPhone && formData.depositorName ? "pointer" : "not-allowed",
+                    }}
+                  >
+                    카카오페이 송금하기
+                  </button>
+                  <button
+                    onClick={async () => {
+                      await handlePaymentSubmit("토스");
+                      window.open("https://toss.me/sahu", "_blank");
+                    }}
+                    disabled={!formData.paymentEmail || !formData.paymentPhone || !formData.depositorName}
+                    style={{
+                      padding: "16px",
+                      fontSize: 15,
+                      fontWeight: 700,
+                      background: formData.paymentEmail && formData.paymentPhone && formData.depositorName ? "#0064FF" : "#e2e8f0",
+                      color: formData.paymentEmail && formData.paymentPhone && formData.depositorName ? "#ffffff" : "#94a3b8",
+                      border: "none",
+                      borderRadius: 8,
+                      cursor: formData.paymentEmail && formData.paymentPhone && formData.depositorName ? "pointer" : "not-allowed",
+                    }}
+                  >
+                    토스 송금하기
+                  </button>
+                </div>
+
                 <button
-                  onClick={handleGeneratePDF}
-                  disabled={isGenerating}
-                  style={{ ...btnPrimary, marginTop: 16 }}
+                  onClick={() => {
+                    handlePaymentSubmit("계좌이체");
+                  }}
+                  disabled={!formData.paymentEmail || !formData.paymentPhone || !formData.depositorName}
+                  style={{ background: "none", border: "none", fontSize: 13, color: "#64748b", textAlign: "center", marginTop: 14, cursor: "pointer", textDecoration: "underline", width: "100%" }}
                 >
-                  {isGenerating ? "미리보기 생성 중..." : "미리보기 확인하기"}
+                  간편 송금을 사용하지 않으시나요? 계좌번호 보기
                 </button>
-              )}
+              </div>
+
+              <button onClick={() => setShowPayment(false)} style={{ ...btnSecondary, marginTop: 16 }}>
+                이전으로
+              </button>
             </div>
           )}
 
-          {/* PDF 다운로드 */}
-          {pdfUrl && (
-            <div style={{ textAlign: "center", marginTop: 24 }}>
-              <div style={{ fontSize: 28, marginBottom: 12, color: "#16a34a" }}>✓</div>
-              <p style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>문서가 생성되었습니다</p>
-              <p style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>
-                아래 버튼으로 미리보기를 확인하세요. 입금 확인 후 최종 문서를 전달드립니다.
+          {/* ── 결제 모달 Step 3: 대기 화면 ── */}
+          {paymentClicked && (
+            <div style={{ textAlign: "center", padding: 32 }}>
+              <div style={{ width: 40, height: 40, border: "3px solid #e2e8f0", borderTop: "3px solid #0f172a", borderRadius: "50%", margin: "0 auto 20px", animation: "spin 1s linear infinite" }} />
+              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+              <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8, color: "#0f172a" }}>
+                입금 대기 중
+              </h3>
+              <p style={{ fontSize: 14, color: "#64748b", lineHeight: 1.7 }}>
+                송금을 완료해 주시면, 확인 후 원본 서류가 이메일로 발송됩니다.
               </p>
-              <a
-                href={pdfUrl}
-                download="상속재산분할협의서_초안.pdf"
-                style={{ ...btnPrimary, display: "inline-block", textDecoration: "none", textAlign: "center" }}
-              >
-                PDF 다운로드
-              </a>
+              {formData.selectedPaymentMethod === "계좌이체" && (
+                <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20, marginTop: 16, textAlign: "left" }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "#334155", marginBottom: 12 }}>계좌 정보</p>
+                  <p style={{ fontSize: 15, color: "#0f172a", lineHeight: 2 }}>
+                    카카오뱅크 3333-00-0000000<br />
+                    예금주: 변희재<br />
+                    금액: 49,900원
+                  </p>
+                </div>
+              )}
+              <p style={{ fontSize: 13, color: "#94a3b8", marginTop: 16 }}>
+                주문번호: {formData.orderNumber || ""}<br />
+                문의: sahu.kr@gmail.com
+              </p>
             </div>
           )}
         </div>

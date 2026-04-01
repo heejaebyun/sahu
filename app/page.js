@@ -5,8 +5,11 @@ import { CHECKLIST, CATEGORIES } from "@/lib/checklist-data";
 
 function calculateDeadlines(deathDate) {
   if (!deathDate) return {};
-  const death = new Date(deathDate);
-  const today = new Date();
+  // YYYY-MM-DD를 명시적으로 분리하여 로컬 타임존(KST)으로 생성
+  const [y, m, d] = deathDate.split("-").map(Number);
+  const death = new Date(y, m - 1, d); // 로컬 자정 기준
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // 오늘 자정
   const diffDays = Math.floor((today - death) / (1000 * 60 * 60 * 24));
   return { deathDate: death, diffDays };
 }
