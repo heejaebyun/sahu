@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   validateRRN,
   RELATION_OPTIONS,
@@ -127,6 +127,44 @@ export default function AgreementPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [showPayment, setShowPayment] = useState(false);
+  const [paymentClicked, setPaymentClicked] = useState(false);
+
+  // localStorage 자동 저장/복원
+  useEffect(() => {
+    const saved = localStorage.getItem("sahu-agreement");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.formData) setFormData(parsed.formData);
+        if (parsed.step) setStep(parsed.step);
+      } catch {}
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "sahu-agreement",
+      JSON.stringify({ formData, step })
+    );
+  }, [formData, step]);
+
+  // 결제 버튼 클릭 카운팅
+  const handlePaymentClick = async () => {
+    setPaymentClicked(true);
+    try {
+      await fetch("/api/consult", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.deceased.name + " 건 (결제 의향)",
+          phone: formData.heirs[0]?.phone || "미입력",
+          deathDate: formData.deceased.date_of_death,
+          needs: "분할협의서 결제 클릭",
+          detail: `상속인 ${formData.heirs.length}명, 재산 ${formData.assets.length}건`,
+        }),
+      });
+    } catch {}
+  };
 
   // ── Step 1: 고인 정보 ──
   const updateDeceased = (field, value) => {
@@ -252,16 +290,19 @@ export default function AgreementPage() {
       const res = await fetch("/api/generate-agreement", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, document: { agreement_date: agreementDate } }),
+        body: JSON.stringify({ ...formData, document: { agreement_date: agreementDate }, isPreview: true }),
       });
 
       if (res.ok) {
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         setPdfUrl(url);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.error || "문서 생성에 실패했습니다. 입력 내용을 확인해 주세요.");
       }
     } catch {
-      alert("문서 생성 중 오류가 발생했습니다.");
+      alert("문서 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
     }
     setIsGenerating(false);
   };
@@ -675,37 +716,50 @@ export default function AgreementPage() {
             </div>
           )}
 
-          {!showPayment && !pdfUrl && (
-            <div style={{ display: "flex", gap: 12 }}>
-              <button onClick={prevStep} style={btnSecondary}>이전</button>
-              <button onClick={() => setShowPayment(true)} style={btnPrimary}>
-                결제 후 문서 생성
-              </button>
-            </div>
-          )}
-
-          {/* 결제 안내 */}
-          {showPayment && !pdfUrl && (
-            <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 10, padding: 24, marginTop: 16 }}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, color: "#0f172a" }}>계좌이체 안내</h3>
-              <div style={{ fontSize: 14, color: "#334155", lineHeight: 2 }}>
-                <div>예금주: (사업자 등록 후 안내)</div>
-                <div>은행: (사업자 등록 후 안내)</div>
-                <div>금액: 49,900원</div>
-              </div>
-              <p style={{ fontSize: 12, color: "#64748b", marginTop: 16, lineHeight: 1.6 }}>
-                입금 확인 후 24시간 내에 문서 다운로드 링크를 안내드립니다.
-                문의: sahu.kr@gmail.com
-              </p>
-
-              {/* MVP: 결제 전 미리보기 생성 */}
+          {!paymentClicked && !pdfUrl && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <button
                 onClick={handleGeneratePDF}
                 disabled={isGenerating}
-                style={{ ...btnPrimary, marginTop: 16 }}
+                style={btnSecondary}
               >
-                {isGenerating ? "문서 생성 중..." : "미리보기 문서 생성"}
+                {isGenerating ? "미리보기 생성 중..." : "미리보기 확인하기 (무료)"}
               </button>
+              <div style={{ display: "flex", gap: 12 }}>
+                <button onClick={prevStep} style={btnSecondary}>이전</button>
+                <button
+                  onClick={handlePaymentClick}
+                  style={btnPrimary}
+                >
+                  결제하고 원본 받기 (49,900원)
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* 결제 클릭 후 — 시스템 점검 메시지 (결제 의향 카운팅) */}
+          {paymentClicked && (
+            <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 10, padding: 24, marginTop: 16, textAlign: "center" }}>
+              <div style={{ fontSize: 24, marginBottom: 12 }}>🔧</div>
+              <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8, color: "#0f172a" }}>
+                결제 시스템 준비 중입니다
+              </h3>
+              <p style={{ fontSize: 14, color: "#64748b", lineHeight: 1.7, marginBottom: 16 }}>
+                현재 결제 시스템을 점검 중입니다. 빠른 시일 내에 오픈 예정입니다.
+                <br />아래 미리보기를 통해 문서를 먼저 확인하실 수 있습니다.
+              </p>
+              <p style={{ fontSize: 13, color: "#94a3b8" }}>
+                문의: sahu.kr@gmail.com
+              </p>
+              {!pdfUrl && (
+                <button
+                  onClick={handleGeneratePDF}
+                  disabled={isGenerating}
+                  style={{ ...btnPrimary, marginTop: 16 }}
+                >
+                  {isGenerating ? "미리보기 생성 중..." : "미리보기 확인하기"}
+                </button>
+              )}
             </div>
           )}
 
