@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.3.2",
     "@vercel/analytics": "^2.0.1",
     "googleapis": "^171.4.0",
     "next": "16.2.1",

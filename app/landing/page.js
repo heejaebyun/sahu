@@ -97,21 +97,21 @@ export default function LandingPage() {
             }}
           >
             <div
-              style={{ width: 40, height: 1, background: "#d97706" }}
+              style={{ width: 40, height: 1, background: "#64748b" }}
             />
             <span
               style={{
                 fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: "0.25em",
-                color: "#d97706",
+                color: "#64748b",
                 textTransform: "uppercase",
               }}
             >
-              Legacy & Honor
+              소중한 분을 위한 마지막 정리
             </span>
             <div
-              style={{ width: 40, height: 1, background: "#d97706" }}
+              style={{ width: 40, height: 1, background: "#64748b" }}
             />
           </div>
 
@@ -149,7 +149,7 @@ export default function LandingPage() {
           >
             사망신고부터 상속세까지, 기한별 행정 체크리스트로 안내합니다.
             <br />
-            상속재산분할협의서가 필요하다면, 법률 실무 수준의 문서를 직접
+            상속재산분할협의서가 필요하다면, 서식 자동 완성 문서를 직접
             작성하실 수 있습니다.
           </p>
 
@@ -259,14 +259,14 @@ export default function LandingPage() {
               },
               {
                 num: "03",
-                title: "법률 실무 수준의 문서",
+                title: "서식 자동 완성 문서",
                 desc: "상속재산분할협의서를 법률사무소 양식으로 자동 작성합니다. 은행과 등기소에서 반려되지 않도록 데이터를 검증합니다.",
               },
             ].map((item) => (
               <div key={item.num}>
                 <span
                   style={{
-                    color: "#d97706",
+                    color: "#64748b",
                     fontWeight: 700,
                     fontSize: 18,
                     display: "block",
@@ -327,7 +327,7 @@ export default function LandingPage() {
             }}
           >
             {[
-              ["문서 형식", "빈칸 나열형", "법률사무소 서술형 문안"],
+              ["문서 형식", "빈칸 나열형", "실무 서술형 문안 자동 완성"],
               ["데이터 검증", "사용자 임의 입력", "주민번호·등기부 자동 검증"],
               ["금액 표기", "수동 입력", "한글 금액 자동 변환"],
               ["제출 결과", "반려 위험", "은행·등기소 제출 기준 충족"],
@@ -337,7 +337,7 @@ export default function LandingPage() {
                 key={label}
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gridTemplateColumns: "minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1.2fr)",
                   borderBottom:
                     i < 4 ? "1px solid #f1f5f9" : "none",
                   fontSize: 14,
@@ -406,7 +406,7 @@ export default function LandingPage() {
             <div style={{ marginBottom: 8 }}>
               <span
                 style={{
-                  background: "#d97706",
+                  background: "#64748b",
                   color: "#ffffff",
                   padding: "4px 14px",
                   fontSize: 11,
@@ -452,7 +452,7 @@ export default function LandingPage() {
               }}
             >
               {[
-                "법률 실무 기반 서술형 협의서 자동 생성",
+                "실무 서술형 협의서 서식 자동 완성",
                 "주민번호·등기부 데이터 검증",
                 "은행·등기소 제출용 PDF 즉시 다운로드",
                 "반려 시 전액 환불 보장",
@@ -467,7 +467,7 @@ export default function LandingPage() {
                     color: "#475569",
                   }}
                 >
-                  <span style={{ color: "#d97706", flexShrink: 0 }}>
+                  <span style={{ color: "#64748b", flexShrink: 0 }}>
                     ✓
                   </span>
                   {text}
@@ -563,7 +563,7 @@ export default function LandingPage() {
                 }}
               >
                 가족을 잃은 뒤 해야 할 행정 절차를 단계별로 안내하고,
-                상속재산분할협의서를 법률 실무 수준으로 작성할 수 있도록
+                상속재산분할협의서를 서식 자동 완성으로 작성할 수 있도록
                 돕습니다.
               </p>
             </div>
