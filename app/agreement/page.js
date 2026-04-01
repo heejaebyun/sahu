@@ -240,7 +240,8 @@ export default function AgreementPage() {
     }));
   };
 
-  const hasException = Object.values(formData.exceptions).some(Boolean);
+  const hasException = Object.values(formData.exceptions).some((v) => v === true);
+  const allAnswered = Object.values(formData.exceptions).every((v) => v !== null);
 
   // ── Step 4: 재산 매핑 ──
   const addAsset = () => {
@@ -470,58 +471,113 @@ export default function AgreementPage() {
               { key: "hasWill", label: "고인이 유언장을 남기셨습니까?" },
               { key: "wantsJoint", label: "하나의 재산을 여러 명이 지분으로 나눠 소유하려 합니까?" },
             ].map((item) => (
-              <label
+              <div
                 key={item.key}
                 style={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: 14,
                   padding: "16px 18px",
-                  background: formData.exceptions[item.key] ? "#fef2f2" : "#f8fafc",
-                  border: `1px solid ${formData.exceptions[item.key] ? "#fecaca" : "#e2e8f0"}`,
+                  background: formData.exceptions[item.key] === true ? "#fef2f2" : formData.exceptions[item.key] === false ? "#f0fdf4" : "#f8fafc",
+                  border: `1px solid ${formData.exceptions[item.key] === true ? "#fecaca" : formData.exceptions[item.key] === false ? "#bbf7d0" : "#e2e8f0"}`,
                   borderRadius: 10,
-                  cursor: "pointer",
-                  fontSize: 14,
-                  color: "#334155",
-                  lineHeight: 1.5,
                 }}
               >
-                <input
-                  type="checkbox"
-                  checked={formData.exceptions[item.key]}
-                  onChange={(e) => updateException(item.key, e.target.checked)}
-                  style={{ marginTop: 2, accentColor: "#dc2626", width: 18, height: 18 }}
-                />
-                {item.label}
-              </label>
+                <p style={{ fontSize: 14, color: "#334155", lineHeight: 1.5, marginBottom: 12 }}>
+                  {item.label}
+                </p>
+                <div style={{ display: "flex", gap: 16 }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 14, color: formData.exceptions[item.key] === false ? "#16a34a" : "#64748b", fontWeight: formData.exceptions[item.key] === false ? 700 : 400 }}>
+                    <input
+                      type="radio"
+                      name={item.key}
+                      checked={formData.exceptions[item.key] === false}
+                      onChange={() => updateException(item.key, false)}
+                      style={{ accentColor: "#16a34a", width: 18, height: 18 }}
+                    />
+                    아니오
+                  </label>
+                  <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 14, color: formData.exceptions[item.key] === true ? "#dc2626" : "#64748b", fontWeight: formData.exceptions[item.key] === true ? 700 : 400 }}>
+                    <input
+                      type="radio"
+                      name={item.key}
+                      checked={formData.exceptions[item.key] === true}
+                      onChange={() => updateException(item.key, true)}
+                      style={{ accentColor: "#dc2626", width: 18, height: 18 }}
+                    />
+                    예
+                  </label>
+                </div>
+              </div>
             ))}
           </div>
 
+          {/* 경고창: 하나라도 "예" 있을 때 하단에 1개만 표시 */}
           {hasException && (
             <div style={{ ...warningBoxStyle, marginTop: 24 }}>
               <p style={{ fontSize: 15, fontWeight: 700, color: "#dc2626", marginBottom: 8 }}>
                 자동 작성이 어려운 케이스입니다.
               </p>
-              <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.6 }}>
+              <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.6, marginBottom: 16 }}>
                 위 항목에 해당하는 경우, 특별대리인 선임이나 공증 등 추가 절차가 필요할 수 있습니다.
                 정확한 처리를 위해 상속 전문가의 상담을 권장합니다.
               </p>
-              <a
-                href="/"
-                style={{
-                  display: "inline-block",
-                  marginTop: 12,
-                  padding: "12px 24px",
-                  background: "#0f172a",
-                  color: "#fff",
-                  borderRadius: 8,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  textDecoration: "none",
-                }}
-              >
-                전문가 상담 신청하기 (무료)
-              </a>
+              <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20 }}>
+                <p style={{ fontSize: 14, fontWeight: 600, color: "#334155", marginBottom: 16 }}>
+                  전문가 상담 신청 (무료)
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <input
+                    style={inputStyle}
+                    placeholder="성함"
+                    value={formData.consultName || ""}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, consultName: e.target.value }))}
+                  />
+                  <input
+                    style={inputStyle}
+                    placeholder="연락처 (010-0000-0000)"
+                    value={formData.consultPhone || ""}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, consultPhone: e.target.value }))}
+                  />
+                  <textarea
+                    style={{ ...inputStyle, minHeight: 80, resize: "vertical" }}
+                    placeholder="상황을 간단히 알려주세요 (선택)"
+                    value={formData.consultDetail || ""}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, consultDetail: e.target.value }))}
+                  />
+                  <button
+                    onClick={async () => {
+                      if (!formData.consultName || !formData.consultPhone) {
+                        alert("성함과 연락처를 입력해 주세요.");
+                        return;
+                      }
+                      const checkedItems = Object.entries(formData.exceptions)
+                        .filter(([, v]) => v === true)
+                        .map(([k]) => {
+                          const labels = { hasMinor: "미성년자", hasForeigner: "해외거주자", hasMissing: "행방불명", hasWill: "유언장", wantsJoint: "지분분할" };
+                          return labels[k] || k;
+                        })
+                        .join(", ");
+                      try {
+                        await fetch("/api/consult", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            name: formData.consultName,
+                            phone: formData.consultPhone,
+                            deathDate: formData.deceased.date_of_death,
+                            needs: "분할협의서 예외 케이스: " + checkedItems,
+                            detail: formData.consultDetail || "",
+                          }),
+                        });
+                        alert("상담 신청이 접수되었습니다. 24시간 내에 연락드리겠습니다.");
+                      } catch {
+                        alert("신청 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+                      }
+                    }}
+                    style={btnPrimary}
+                  >
+                    상담 신청하기
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -529,10 +585,10 @@ export default function AgreementPage() {
             <button onClick={prevStep} style={btnSecondary}>이전</button>
             <button
               onClick={nextStep}
-              disabled={hasException}
-              style={hasException ? btnDisabled : btnPrimary}
+              disabled={!allAnswered || hasException}
+              style={!allAnswered || hasException ? btnDisabled : btnPrimary}
             >
-              {hasException ? "해당 사항이 있으면 진행할 수 없습니다" : "다음"}
+              {!allAnswered ? "모든 항목에 답변해 주세요" : hasException ? "해당 사항이 있어 진행할 수 없습니다" : "다음"}
             </button>
           </div>
         </div>
