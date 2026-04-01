@@ -75,11 +75,38 @@ export async function POST(request) {
       },
     });
 
-    // 주문 확인 이메일 발송
+    // 유저에게 주문 확인 이메일
     try {
       await sendOrderConfirmation({ to: email, orderNumber, depositorName, paymentMethod });
     } catch (emailErr) {
       console.error("주문 확인 이메일 발송 실패:", emailErr);
+    }
+
+    // 창업자에게 새 주문 알림 (전화번호 포함 — 계좌이체 시 수동 문자 발송용)
+    try {
+      const adminEmail = process.env.GMAIL_USER;
+      if (adminEmail) {
+        const { default: nodemailer } = await import("nodemailer");
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD },
+        });
+        await transporter.sendMail({
+          from: adminEmail,
+          to: adminEmail,
+          subject: `🔔 새 주문: ${orderNumber} (${paymentMethod})`,
+          html: `<h3>새 주문이 접수되었습니다</h3>
+            <p><strong>주문번호:</strong> ${orderNumber}</p>
+            <p><strong>입금자명:</strong> ${depositorName}</p>
+            <p><strong>결제수단:</strong> ${paymentMethod}</p>
+            <p><strong>연락처:</strong> ${phone}</p>
+            <p><strong>이메일:</strong> ${email}</p>
+            ${paymentMethod === "계좌이체" ? "<p style='color:red;font-weight:bold'>⚠️ 계좌이체 선택 — 이 전화번호로 계좌번호 문자를 보내주세요!</p>" : ""}
+            <p>Google Sheets에서 확인: <a href='https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}'>열기</a></p>`,
+        });
+      }
+    } catch (adminErr) {
+      console.error("관리자 알림 발송 실패:", adminErr);
     }
 
     return NextResponse.json({ success: true, orderNumber });

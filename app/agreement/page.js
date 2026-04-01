@@ -935,11 +935,12 @@ export default function AgreementPage() {
                 송금을 완료해 주시면, 확인 후 원본 서류가 이메일로 발송됩니다.
               </p>
               {formData.selectedPaymentMethod === "계좌이체" && (
-                <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20, marginTop: 16, textAlign: "left" }}>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: "#334155", marginBottom: 12 }}>계좌 정보</p>
-                  <p style={{ fontSize: 15, color: "#0f172a", lineHeight: 2 }}>
-                    {process.env.NEXT_PUBLIC_BANK_INFO || "계좌 정보 준비 중"}<br />
-                    금액: 49,900원
+                <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, padding: 20, marginTop: 16, textAlign: "center" }}>
+                  <p style={{ fontSize: 14, color: "#0369a1", fontWeight: 600 }}>
+                    보안을 위해 입력하신 전화번호로 결제 계좌를 발송해 드렸습니다.
+                  </p>
+                  <p style={{ fontSize: 12, color: "#64748b", marginTop: 8 }}>
+                    문자가 도착하지 않으면 sahu.kr@gmail.com으로 문의해 주세요.
                   </p>
                 </div>
               )}
