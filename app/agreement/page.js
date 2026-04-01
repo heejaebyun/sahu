@@ -938,8 +938,7 @@ export default function AgreementPage() {
                 <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, padding: 20, marginTop: 16, textAlign: "left" }}>
                   <p style={{ fontSize: 13, fontWeight: 600, color: "#334155", marginBottom: 12 }}>계좌 정보</p>
                   <p style={{ fontSize: 15, color: "#0f172a", lineHeight: 2 }}>
-                    카카오뱅크 3333-00-0000000<br />
-                    예금주: 변희재<br />
+                    {process.env.NEXT_PUBLIC_BANK_INFO || "계좌 정보 준비 중"}<br />
                     금액: 49,900원
                   </p>
                 </div>
