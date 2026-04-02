@@ -3,6 +3,93 @@
 import { useState, useMemo, useEffect } from "react";
 import { CHECKLIST, CATEGORIES } from "@/lib/checklist-data";
 
+// UTM 파라미터 저장
+function saveUTM() {
+  if (typeof window === "undefined") return;
+  const params = new URLSearchParams(window.location.search);
+  const source = params.get("utm_source");
+  const medium = params.get("utm_medium");
+  const campaign = params.get("utm_campaign");
+  if (source || medium || campaign) {
+    sessionStorage.setItem("sahu-utm", JSON.stringify({ source, medium, campaign }));
+  }
+}
+
+function getUTM() {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(sessionStorage.getItem("sahu-utm") || "{}");
+  } catch {
+    return {};
+  }
+}
+
+// 피드백 위젯
+function FeedbackWidget() {
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleFeedback = async (rating) => {
+    setSubmitted(true);
+    try {
+      await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          page: window.location.pathname,
+          rating,
+          utm: getUTM(),
+        }),
+      });
+    } catch {}
+  };
+
+  if (submitted) {
+    return (
+      <div style={{ textAlign: "center", padding: "20px 0", marginTop: 24, borderTop: "1px solid var(--border)" }}>
+        <p style={{ fontSize: 13, color: "var(--text-secondary)" }}>소중한 의견 감사합니다.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ textAlign: "center", padding: "24px 0", marginTop: 24, borderTop: "1px solid var(--border)" }}>
+      <p style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 12 }}>
+        이 페이지가 도움이 되셨나요?
+      </p>
+      <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
+        <button
+          onClick={() => handleFeedback("helpful")}
+          style={{
+            padding: "8px 20px",
+            fontSize: 13,
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
+            borderRadius: 8,
+            color: "var(--text-secondary)",
+            cursor: "pointer",
+          }}
+        >
+          👍 도움이 됐어요
+        </button>
+        <button
+          onClick={() => handleFeedback("not_helpful")}
+          style={{
+            padding: "8px 20px",
+            fontSize: 13,
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
+            borderRadius: 8,
+            color: "var(--text-secondary)",
+            cursor: "pointer",
+          }}
+        >
+          👎 부족해요
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function calculateDeadlines(deathDate) {
   if (!deathDate) return {};
   // YYYY-MM-DD를 명시적으로 분리하여 로컬 타임존(KST)으로 생성
@@ -488,6 +575,7 @@ export default function Home() {
       } catch {}
     }
     setLoaded(true);
+    saveUTM();
   }, []);
 
   useEffect(() => {
@@ -536,7 +624,7 @@ export default function Home() {
       const res = await fetch("/api/consult", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...consultForm, deathDate }),
+        body: JSON.stringify({ ...consultForm, deathDate, utm: getUTM() }),
       });
       if (res.ok) {
         setConsultStatus("done");
@@ -1204,6 +1292,9 @@ export default function Home() {
           </div>
         </a>
       </div>
+
+      {/* 피드백 위젯 */}
+      <FeedbackWidget />
 
       <footer
         style={{
