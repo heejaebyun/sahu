@@ -1,6 +1,7 @@
 import { google } from "googleapis";
 import { NextResponse } from "next/server";
 import { sendOrderConfirmation } from "@/lib/email";
+import { sendTelegramAlert } from "@/lib/telegram";
 
 const SPREADSHEET_ID = "1BdkaB-9p9nR_kMdlmSVE9AvD62MW4qN__u_Fvzb99Hw";
 
@@ -82,31 +83,15 @@ export async function POST(request) {
       console.error("주문 확인 이메일 발송 실패:", emailErr);
     }
 
-    // 창업자에게 새 주문 알림 (전화번호 포함 — 계좌이체 시 수동 문자 발송용)
+    // 창업자에게 텔레그램 알림 (즉시 수신)
     try {
-      const adminEmail = process.env.GMAIL_USER;
-      if (adminEmail) {
-        const { default: nodemailer } = await import("nodemailer");
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD },
-        });
-        await transporter.sendMail({
-          from: adminEmail,
-          to: adminEmail,
-          subject: `🔔 새 주문: ${orderNumber} (${paymentMethod})`,
-          html: `<h3>새 주문이 접수되었습니다</h3>
-            <p><strong>주문번호:</strong> ${orderNumber}</p>
-            <p><strong>입금자명:</strong> ${depositorName}</p>
-            <p><strong>결제수단:</strong> ${paymentMethod}</p>
-            <p><strong>연락처:</strong> ${phone}</p>
-            <p><strong>이메일:</strong> ${email}</p>
-            ${paymentMethod === "계좌이체" ? "<p style='color:red;font-weight:bold'>⚠️ 계좌이체 선택 — 이 전화번호로 계좌번호 문자를 보내주세요!</p>" : ""}
-            <p>Google Sheets에서 확인: <a href='https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}'>열기</a></p>`,
-        });
+      let alertMsg = `🔔 <b>새 주문</b>\n\n주문번호: ${orderNumber}\n입금자명: ${depositorName}\n결제수단: ${paymentMethod}\n연락처: ${phone}\n이메일: ${email}`;
+      if (paymentMethod === "계좌이체") {
+        alertMsg += `\n\n⚠️ <b>계좌이체 선택</b>\n이 번호로 계좌번호 문자 보내세요: ${phone}`;
       }
-    } catch (adminErr) {
-      console.error("관리자 알림 발송 실패:", adminErr);
+      await sendTelegramAlert(alertMsg);
+    } catch (alertErr) {
+      console.error("텔레그램 알림 실패:", alertErr);
     }
 
     return NextResponse.json({ success: true, orderNumber });
