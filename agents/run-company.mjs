@@ -19,10 +19,26 @@ const CLAUDE = (() => {
 })();
 const TODAY = new Date().toISOString().split("T")[0];
 const MEETING_DIR = `${BASE}/agents/meetings`;
-const BOARD_DIR = `${BASE}/agents/board`; // 에이전트 간 메시지 보드
+const BOARD_DIR = `${BASE}/agents/board`;
+const MEMORY_DIR = `${BASE}/agents/memory`;
 
 mkdirSync(MEETING_DIR, { recursive: true });
 mkdirSync(BOARD_DIR, { recursive: true });
+mkdirSync(MEMORY_DIR, { recursive: true });
+
+// 에이전트 기억 읽기
+function loadAgentMemory(agentKey) {
+  try {
+    return readFileSync(`${MEMORY_DIR}/${agentKey}.md`, "utf-8");
+  } catch {
+    return "기억 없음 (첫 회의)";
+  }
+}
+
+// 에이전트 기억 업데이트
+function saveAgentMemory(agentKey, content) {
+  writeFileSync(`${MEMORY_DIR}/${agentKey}.md`, content, "utf-8");
+}
 
 function askClaude(prompt) {
   const tmpFile = `/tmp/sahu-meeting-${Date.now()}.txt`;
@@ -187,11 +203,16 @@ ${ctx.lastMeeting ? ctx.lastMeeting.slice(0, 500) : "첫 회의"}
   const agents = [
     {
       name: "운영 담당",
+      memoryKey: "ops",
       prompt: `${companyContext}
+
+=== 당신의 과거 기억 (이전 회의에서 한 발언과 받은 피드백) ===
+${loadAgentMemory("ops")}
+=== 기억 끝 ===
 
 회사 최우선 목표: ${TARGET}
 
-당신은 운영 담당입니다. 회의 시작 전 현황 데이터를 먼저 보고하세요:
+당신은 운영 담당입니다. 과거 기억을 참고하여 연속성 있게 발언하세요. 이전에 제안한 것의 진행 상황을 먼저 보고하세요. 회의 시작 전 현황 데이터를 먼저 보고하세요:
 1. 현황 숫자 보고: 크롤링 실행 횟수, 상담 신청 건수, 자동화 정상 동작 여부, 에러 건수
 2. 5,000명 달성을 위해 운영에서 이번 주 해야 할 구체적 액션 2개 (자동화 확대, 크론 최적화 등)
 3. 다른 팀에 필요한 것 1개
@@ -200,11 +221,16 @@ ${ctx.lastMeeting ? ctx.lastMeeting.slice(0, 500) : "첫 회의"}
     },
     {
       name: "리서치·수익화 담당",
+      memoryKey: "research",
       prompt: `${companyContext}
+
+=== 당신의 과거 기억 ===
+${loadAgentMemory("research")}
+=== 기억 끝 ===
 
 회사 최우선 목표: ${TARGET}
 
-당신은 리서치·수익화 담당입니다. 데이터와 수익 모델을 동시에 책임집니다.
+당신은 리서치·수익화 담당입니다. 과거 기억을 참고하여 연속성 있게 발언하세요. 데이터와 수익 모델을 동시에 책임집니다.
 1. 데이터 브리핑: 경쟁 서비스 현황, 키워드 검색량 트렌드, 세무사 수수료 시세 등 팀 의사결정에 필요한 데이터 1-2개
 2. 수익화 준비: 세무사/법무사 제휴 모델 진행 상황, 건당 수수료 구조, 예상 전환율
 3. 5,000명 유입을 위한 데이터 기반 채널 추천 1개 (검색량·경쟁도 근거 포함)
@@ -213,11 +239,16 @@ ${ctx.lastMeeting ? ctx.lastMeeting.slice(0, 500) : "첫 회의"}
     },
     {
       name: "마케팅 팀장",
+      memoryKey: "marketing",
       prompt: `${companyContext}
+
+=== 당신의 과거 기억 ===
+${loadAgentMemory("marketing")}
+=== 기억 끝 ===
 
 회사 최우선 목표: ${TARGET}
 
-당신은 마케팅 팀장입니다. 5,000명 목표를 기준으로:
+당신은 마케팅 팀장입니다. 과거 기억을 참고하여 연속성 있게 발언하세요. 5,000명 목표를 기준으로:
 
 주의: 반드시 현황 문서의 "확정된 의사결정"을 준수하세요. 금지된 채널(네이버 카페 등)은 절대 제안하지 마세요.
 
@@ -229,11 +260,16 @@ ${ctx.lastMeeting ? ctx.lastMeeting.slice(0, 500) : "첫 회의"}
     },
     {
       name: "CTO",
+      memoryKey: "cto",
       prompt: `${companyContext}
+
+=== 당신의 과거 기억 ===
+${loadAgentMemory("cto")}
+=== 기억 끝 ===
 
 회사 최우선 목표: ${TARGET}
 
-당신은 CTO입니다. 회의 전 프로덕트 현황을 파악한 상태로:
+당신은 CTO입니다. 과거 기억을 참고하여 연속성 있게 발언하세요. 회의 전 프로덕트 현황을 파악한 상태로:
 1. 프로덕트 현황: 현재 기능 목록, 에러/장애 여부, 모바일 UX 상태
 2. 5,000명 유입·리텐션을 위해 이번 주 구현할 기능 1-2개 (공수 포함)
 3. 자동화 파이프라인 개선점 1개
@@ -242,11 +278,16 @@ ${ctx.lastMeeting ? ctx.lastMeeting.slice(0, 500) : "첫 회의"}
     },
     {
       name: "전략 이사",
+      memoryKey: "strategy",
       prompt: `${companyContext}
+
+=== 당신의 과거 기억 ===
+${loadAgentMemory("strategy")}
+=== 기억 끝 ===
 
 회사 최우선 목표: ${TARGET}
 
-당신은 전략 이사입니다. 시장 데이터와 경쟁 환경 기반으로:
+당신은 전략 이사입니다. 과거 기억을 참고하여 연속성 있게 발언하세요. 시장 데이터와 경쟁 환경 기반으로:
 1. 목표 대비 현재 위치 평가 (숫자 기반)
 2. 5,000명 달성 4주 로드맵: 주차별 목표와 핵심 전략
 3. 경쟁사 대비 우리의 차별점과 가장 빠른 유저 확보 전략 1개
@@ -256,11 +297,16 @@ ${ctx.lastMeeting ? ctx.lastMeeting.slice(0, 500) : "첫 회의"}
     },
     {
       name: "사업개발 담당",
+      memoryKey: "bizdev",
       prompt: `${companyContext}
+
+=== 당신의 과거 기억 ===
+${loadAgentMemory("bizdev")}
+=== 기억 끝 ===
 
 회사 최우선 목표: ${TARGET}
 
-당신은 사업개발 담당입니다. 신규 사업 기회를 발굴하고 검증합니다.
+당신은 사업개발 담당입니다. 과거 기억을 참고하여 연속성 있게 발언하세요. 신규 사업 기회를 발굴하고 검증합니다.
 기존 보유 자산(크롤링, 콘텐츠 생성 등)에 국한하지 마세요. AI 에이전트가 자율적으로 운영할 수 있는 모든 사업을 탐색합니다.
 
 1. 현재 SAHU 사업과 시너지 있는 신규 수익원 1개 (구체적 숫자 포함)
@@ -272,11 +318,16 @@ ${ctx.lastMeeting ? ctx.lastMeeting.slice(0, 500) : "첫 회의"}
     },
     {
       name: "브랜딩 담당",
+      memoryKey: "branding",
       prompt: `${companyContext}
+
+=== 당신의 과거 기억 ===
+${loadAgentMemory("branding")}
+=== 기억 끝 ===
 
 회사 최우선 목표: ${TARGET}
 
-당신은 브랜딩 담당입니다. 브랜드 아이덴티티, UX, 톤앤매너, 첫인상을 책임집니다.
+당신은 브랜딩 담당입니다. 과거 기억을 참고하여 연속성 있게 발언하세요. 브랜드 아이덴티티, UX, 톤앤매너, 첫인상을 책임집니다.
 1. 현재 sahu.kr 첫 진입 경험 평가: 유저가 3초 안에 "이 서비스가 뭔지, 믿을 수 있는지" 판단 가능한가?
 2. 브랜드 신뢰도 요소 점검: 현재 빠져 있는 신뢰 요소가 있는가? (소개, 실적, 추천, 보증 등)
 3. 톤앤매너: 유가족 대상 서비스로서 현재 톤이 적절한가?
@@ -299,6 +350,45 @@ ${ctx.lastMeeting ? ctx.lastMeeting.slice(0, 500) : "첫 회의"}
     agentOutputs[agent.name] = response;
     console.log(response);
     console.log(`\n${"─".repeat(40)}`);
+  }
+
+  // ── 1라운드 발언 후 각 에이전트 기억 업데이트 ──
+  for (const agent of agents) {
+    if (!agent.memoryKey) continue;
+    const memoryPrompt = `당신은 ${agent.name}입니다. 방금 회의에서 다음과 같이 발언했습니다:
+
+${agentOutputs[agent.name]}
+
+이전 기억:
+${loadAgentMemory(agent.memoryKey)}
+
+위 발언을 바탕으로 기억을 업데이트하세요. 아래 형식으로 작성:
+
+# 에이전트 기억 (${TODAY} 업데이트)
+
+## 내가 한 제안들
+(오늘 제안 + 이전 제안 중 아직 유효한 것)
+
+## 내가 받은 피드백
+(다른 에이전트나 창업자로부터 받은 지적/수정/승인)
+
+## 확인된 사실
+(검증된 숫자, 경쟁사 정보, 기술 확인 결과 등)
+
+## 진행 중인 과제
+(아직 완료되지 않은 것)
+
+## 다음 회의에서 할 것
+(다음에 보고/제안할 내용)
+
+간결하게. 10줄 이내.`;
+
+    try {
+      const memory = askClaude(memoryPrompt);
+      saveAgentMemory(agent.memoryKey, memory);
+    } catch (err) {
+      console.log(`${agent.name} 기억 저장 실패: ${err.message}`);
+    }
   }
 
   // ── 2라운드: 상호 반박/동의/질문 ──
@@ -370,6 +460,12 @@ ${Object.entries(round2Outputs).map(([name, output]) => `[${name}]\n${output}`).
 
   const ceoSummary = askClaude(ceoPrompt);
   console.log(ceoSummary);
+
+  // CEO 기억 업데이트
+  try {
+    const ceoMemory = `# 에이전트 기억 (${TODAY} 업데이트)\n\n## CEO 결론\n${ceoSummary.slice(0, 500)}\n\n## 2라운드 핵심 쟁점\n${Object.entries(round2Outputs).map(([n, o]) => `${n}: ${o.slice(0, 100)}`).join("\n")}\n`;
+    saveAgentMemory("ceo", ceoMemory);
+  } catch {}
 
   // 5. 회의록 저장
   const minutes = `# SAHU 일일 경영 회의 — ${TODAY}
