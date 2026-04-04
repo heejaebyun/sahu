@@ -660,8 +660,20 @@ export default function Home() {
           maxWidth: 480,
           margin: "0 auto",
           padding: "100px 20px 80px",
+          background: "var(--bg)",
+          minHeight: "100vh",
         }}
       >
+        <nav className="sahu-nav">
+          <div className="sahu-nav-inner">
+            <a href="/landing" className="sahu-logo">SAHU</a>
+            <div className="sahu-nav-links">
+              <a href="/life">생전 정리</a>
+              <a href="/" className="active">사후 행정</a>
+              <a href="/agreement">분할협의서</a>
+            </div>
+          </div>
+        </nav>
         <div style={{ textAlign: "center", marginBottom: 56 }}>
           <div
             style={{
@@ -843,8 +855,21 @@ export default function Home() {
         maxWidth: 600,
         margin: "0 auto",
         padding: "32px 20px 80px",
+        background: "var(--bg)",
+        minHeight: "100vh",
       }}
     >
+      <nav className="sahu-nav">
+        <div className="sahu-nav-inner">
+          <a href="/landing" className="sahu-logo">SAHU</a>
+          <div className="sahu-nav-links">
+            <a href="/life">생전 정리</a>
+            <a href="/" className="active">사후 행정</a>
+            <a href="/agreement">분할협의서</a>
+          </div>
+        </div>
+      </nav>
+      <div style={{ height: 56 }} />
       <header
         style={{
           display: "flex",
