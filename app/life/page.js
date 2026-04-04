@@ -199,6 +199,43 @@ export default function LifePage() {
         );
       })}
 
+      {/* PDF 리포트 다운로드 */}
+      {filled > 0 && (
+        <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 12, padding: "20px 24px", marginTop: 16, textAlign: "center" }}>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: "#0f172a", marginBottom: 8 }}>인생정리 리포트</h3>
+          <p style={{ fontSize: 13, color: "#64748b", marginBottom: 16, lineHeight: 1.6 }}>
+            지금까지 정리한 내용을 PDF로 다운로드할 수 있습니다.<br />
+            출력해서 가족에게 전달하거나, 안전한 곳에 보관하세요.
+          </p>
+          <button
+            onClick={async () => {
+              try {
+                const res = await fetch("/api/generate-life-report", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ entries, familyMembers }),
+                });
+                if (res.ok) {
+                  const blob = await res.blob();
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = "인생정리_리포트.pdf";
+                  a.click();
+                } else {
+                  alert("PDF 생성에 실패했습니다.");
+                }
+              } catch {
+                alert("오류가 발생했습니다.");
+              }
+            }}
+            style={{ padding: "14px 32px", background: "#0f172a", color: "#fff", border: "none", borderRadius: 8, fontSize: 14, fontWeight: 700, cursor: "pointer" }}
+          >
+            📄 PDF 리포트 다운로드
+          </button>
+        </div>
+      )}
+
       {/* 사후 서비스 연결 */}
       <div style={{ background: "#0f172a", borderRadius: 12, padding: "24px", marginTop: 16, color: "#ffffff" }}>
         <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>만약의 상황이 발생한다면</h3>

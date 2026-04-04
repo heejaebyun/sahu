@@ -147,10 +147,9 @@ export default function LandingPage() {
               fontWeight: 300,
             }}
           >
-            사망신고부터 상속세까지, 기한별 행정 체크리스트로 안내합니다.
+            미리 정리하면, 가족이 고생하지 않습니다.
             <br />
-            상속재산분할협의서가 필요하다면, 서식 자동 완성 문서를 직접
-            작성하실 수 있습니다.
+            생전 정리부터 사후 행정까지, 한 곳에서 안내합니다.
           </p>
 
           <div
@@ -170,6 +169,23 @@ export default function LandingPage() {
               }}
             >
               <Link
+                href="/life"
+                style={{
+                  background: "#10b981",
+                  color: "#ffffff",
+                  padding: "18px 40px",
+                  fontSize: 14,
+                  fontWeight: 700,
+                  letterSpacing: "0.08em",
+                  textDecoration: "none",
+                  display: "inline-block",
+                  boxShadow: "0 8px 32px rgba(16,185,129,0.2)",
+                  borderRadius: 4,
+                }}
+              >
+                생전 정리 시작하기
+              </Link>
+              <Link
                 href="/"
                 style={{
                   background: "#0f172a",
@@ -180,26 +196,10 @@ export default function LandingPage() {
                   letterSpacing: "0.08em",
                   textDecoration: "none",
                   display: "inline-block",
-                  boxShadow: "0 8px 32px rgba(15,23,42,0.15)",
+                  borderRadius: 4,
                 }}
               >
-                체크리스트 시작하기
-              </Link>
-              <Link
-                href="/agreement"
-                style={{
-                  background: "transparent",
-                  color: "#0f172a",
-                  padding: "18px 40px",
-                  fontSize: 14,
-                  fontWeight: 700,
-                  letterSpacing: "0.08em",
-                  textDecoration: "none",
-                  display: "inline-block",
-                  border: "1px solid #e2e8f0",
-                }}
-              >
-                분할협의서 작성하기
+                사후 행정 체크리스트
               </Link>
             </div>
             <p
