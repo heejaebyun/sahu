@@ -82,17 +82,25 @@ export default function LifePage() {
   if (!loaded) return null;
 
   return (
-    <main style={{ maxWidth: 640, margin: "0 auto", padding: "32px 20px 80px", background: "#fefdf8", minHeight: "100vh", color: "#1e293b", fontFamily: "var(--font-geist-sans), -apple-system, sans-serif" }}>
+    <main style={{ maxWidth: 640, margin: "0 auto", padding: "32px 20px 80px", background: "var(--bg)", minHeight: "100vh", color: "var(--text)" }}>
 
-      {/* 헤더 */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-        <a href="/" style={{ fontSize: 18, fontWeight: 800, letterSpacing: "0.15em", color: "#0f172a", textDecoration: "none" }}>SAHU</a>
-        <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={handleShare} style={{ background: "#10b981", color: "#fff", border: "none", padding: "8px 16px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>가족에게 공유</button>
+      {/* 네비게이션 */}
+      <nav className="sahu-nav">
+        <div className="sahu-nav-inner">
+          <a href="/landing" className="sahu-logo">SAHU</a>
+          <div className="sahu-nav-links">
+            <a href="/life" className="active">생전 정리</a>
+            <a href="/">사후 행정</a>
+            <a href="/agreement">분할협의서</a>
+          </div>
         </div>
-      </div>
+      </nav>
 
-      <p style={{ fontSize: 12, color: "#94a3b8", marginBottom: 24 }}>인생정리</p>
+      <div style={{ height: 56 }} /> {/* 네비 높이만큼 여백 */}
+
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8, paddingTop: 16 }}>
+        <button onClick={handleShare} className="btn-accent" style={{ padding: "8px 16px", fontSize: 12 }}>가족에게 공유</button>
+      </div>
 
       {/* 소개 */}
       <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 12, padding: "20px 24px", marginBottom: 24 }}>
