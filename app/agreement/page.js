@@ -354,12 +354,18 @@ export default function AgreementPage() {
 
   return (
     <main style={containerStyle}>
-      {/* 헤더 */}
-      <div style={{ marginBottom: 32 }}>
-        <a href="/landing" style={{ fontSize: 18, fontWeight: 800, letterSpacing: "0.15em", color: "#0f172a", textDecoration: "none" }}>
-          SAHU
-        </a>
-      </div>
+      {/* 네비게이션 */}
+      <nav className="sahu-nav">
+        <div className="sahu-nav-inner">
+          <a href="/landing" className="sahu-logo">SAHU</a>
+          <div className="sahu-nav-links">
+            <a href="/life">생전 정리</a>
+            <a href="/">사후 행정</a>
+            <a href="/agreement" className="active">분할협의서</a>
+          </div>
+        </div>
+      </nav>
+      <div style={{ height: 56 }} />
 
       {/* 진행 바 */}
       <div style={{ display: "flex", gap: 4, marginBottom: 32 }}>
