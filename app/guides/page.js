@@ -32,12 +32,27 @@ const GUIDES = [
 export default function GuidesPage() {
   return (
     <main
+      data-theme="dark"
       style={{
         maxWidth: 640,
         margin: "0 auto",
         padding: "40px 20px 80px",
+        background: "var(--bg)",
+        color: "var(--text)",
+        minHeight: "100vh",
       }}
     >
+      <nav className="sahu-nav">
+        <div className="sahu-nav-inner">
+          <a href="/landing" className="sahu-logo">SAHU</a>
+          <div className="sahu-nav-links">
+            <a href="/life">생전 정리</a>
+            <a href="/" className="active">사후 행정</a>
+            <a href="/agreement">분할협의서</a>
+          </div>
+        </div>
+      </nav>
+      <div style={{ height: 56 }} />
       <a
         href="/"
         style={{
