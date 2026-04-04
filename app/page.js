@@ -649,13 +649,13 @@ export default function Home() {
 
   // ── localStorage 로딩 전에는 빈 화면 (깜빡임 방지) ──
   if (!loaded) {
-    return null;
+    return <div data-theme="dark" />;
   }
 
   // ── 시작 화면 ──
   if (!started) {
     return (
-      <main
+      <main data-theme="dark"
         style={{
           maxWidth: 480,
           margin: "0 auto",
@@ -838,6 +838,7 @@ export default function Home() {
 
   return (
     <main
+      data-theme="dark"
       style={{
         maxWidth: 600,
         margin: "0 auto",

@@ -9,11 +9,11 @@ const geistSans = Geist({
 
 export const metadata = {
   title: {
-    default: "사후(SAHU) — 사망 후 행정 처리 가이드",
+    default: "사후(SAHU) — 생전 정리부터 사후 행정까지",
     template: "%s — 사후(SAHU)",
   },
   description:
-    "가족을 잃은 후 해야 할 행정 절차를 단계별로 안내합니다. 사망신고, 상속, 은행, 보험, 세금 등 모든 절차를 체크리스트로 관리하세요.",
+    "미리 정리하면, 가족이 고생하지 않습니다. 디지털 유산 정리, 사망 후 행정 체크리스트, 상속재산분할협의서까지.",
   verification: {
     google: "MWCeWKB-iUh9gi_4BySFnKl_AI8QhiV6h3UGAKiSXEE",
     other: {
@@ -22,9 +22,9 @@ export const metadata = {
   },
   metadataBase: new URL("https://sahu.kr"),
   openGraph: {
-    title: "사후(SAHU) — 사망 후 행정 처리 가이드",
+    title: "사후(SAHU) — 생전 정리부터 사후 행정까지",
     description:
-      "사망신고, 상속, 은행, 보험, 세금 등 사망 후 해야 할 모든 행정 절차를 체크리스트로 관리하세요.",
+      "미리 정리하면, 가족이 고생하지 않습니다. 디지털 유산 정리, 사망 후 행정 체크리스트, 상속재산분할협의서까지.",
     url: "https://sahu.kr",
     siteName: "사후(SAHU)",
     locale: "ko_KR",
@@ -32,20 +32,21 @@ export const metadata = {
   },
   twitter: {
     card: "summary",
-    title: "사후(SAHU) — 사망 후 행정 처리 가이드",
+    title: "사후(SAHU) — 생전 정리부터 사후 행정까지",
     description:
-      "사망신고, 상속, 은행, 보험, 세금 등 사망 후 해야 할 모든 행정 절차를 체크리스트로 관리하세요.",
+      "미리 정리하면, 가족이 고생하지 않습니다.",
   },
   keywords: [
+    "생전 정리",
+    "디지털 유산",
+    "엔딩노트",
+    "인생정리",
     "사망 후 해야할 일",
     "사망신고 방법",
     "상속포기 기한",
+    "상속재산분할협의서",
     "안심상속 원스톱서비스",
     "사망 후 행정 처리",
-    "상속세 신고",
-    "사망 후 은행",
-    "사망 후 보험",
-    "장례 후 절차",
   ],
 };
 
@@ -53,9 +54,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ko" className={geistSans.variable}>
       <body>
-          {children}
-          <Analytics />
-        </body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
