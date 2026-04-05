@@ -29,19 +29,46 @@ export default function LifePage() {
     }
   }, [entries, familyMembers, loaded]);
 
-  const updateEntry = (itemId, fieldKey, value) => {
+  // entries 구조: { "email-accounts": [ { id: "e_1", provider: "Gmail", ... }, { id: "e_2", ... } ] }
+  const addEntry = (itemId) => {
     setEntries((prev) => ({
       ...prev,
-      [itemId]: { ...prev[itemId], [fieldKey]: value },
+      [itemId]: [...(prev[itemId] || []), { _id: `e_${Date.now()}` }],
     }));
+  };
+
+  const removeEntry = (itemId, entryId) => {
+    setEntries((prev) => ({
+      ...prev,
+      [itemId]: (prev[itemId] || []).filter((e) => e._id !== entryId),
+    }));
+  };
+
+  const updateEntry = (itemId, entryId, fieldKey, value) => {
+    setEntries((prev) => ({
+      ...prev,
+      [itemId]: (prev[itemId] || []).map((e) =>
+        e._id === entryId ? { ...e, [fieldKey]: value } : e
+      ),
+    }));
+  };
+
+  // 이전 단일 객체 형태 → 배열로 마이그레이션
+  const getEntries = (itemId) => {
+    const raw = entries[itemId];
+    if (!raw) return [];
+    if (Array.isArray(raw)) return raw;
+    // 이전 형태(단일 객체) → 배열로 변환
+    return [{ ...raw, _id: `migrated_${itemId}` }];
   };
 
   const getCompletionRate = () => {
     const total = LIFE_CHECKLIST.length;
     const filled = LIFE_CHECKLIST.filter((item) => {
-      const entry = entries[item.id];
-      if (!entry) return false;
-      return item.fields.some((f) => entry[f.key]?.trim());
+      const itemEntries = getEntries(item.id);
+      return itemEntries.some((entry) =>
+        item.fields.some((f) => entry[f.key]?.trim?.())
+      );
     }).length;
     return { filled, total, pct: total === 0 ? 0 : Math.round((filled / total) * 100) };
   };
@@ -164,8 +191,11 @@ export default function LifePage() {
 
             {items.map((item) => {
               const isExpanded = expandedItem === item.id;
-              const entry = entries[item.id] || {};
-              const isFilled = item.fields.some((f) => entry[f.key]?.trim());
+              const itemEntries = getEntries(item.id);
+              const isFilled = itemEntries.some((entry) =>
+                item.fields.some((f) => entry[f.key]?.trim?.())
+              );
+              const entryCount = itemEntries.length;
 
               return (
                 <div key={item.id} style={{ background: isFilled ? "#f0fdf4" : "#ffffff", border: `1px solid ${isFilled ? "#bbf7d0" : "#e2e8f0"}`, borderRadius: 10, padding: "14px 16px", marginBottom: 8 }}>
@@ -173,6 +203,7 @@ export default function LifePage() {
                     <div>
                       <span style={{ fontSize: 14, fontWeight: 600, color: isFilled ? "#059669" : "#334155" }}>
                         {isFilled ? "✓ " : ""}{item.title}
+                        {entryCount > 0 && <span style={{ fontSize: 12, color: "#94a3b8", fontWeight: 400 }}> ({entryCount}개)</span>}
                       </span>
                       <p style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>{item.description}</p>
                     </div>
@@ -180,24 +211,37 @@ export default function LifePage() {
                   </div>
 
                   {isExpanded && (
-                    <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 12 }}>
-                      {item.fields.map((field) => (
-                        <div key={field.key}>
-                          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#475569", marginBottom: 4 }}>{field.label}</label>
-                          {field.type === "select" ? (
-                            <select value={entry[field.key] || ""} onChange={(e) => updateEntry(item.id, field.key, e.target.value)} style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, color: "#1e293b", background: "#fff" }}>
-                              <option value="">선택</option>
-                              {field.options.map((opt) => (
-                                <option key={opt} value={opt}>{opt}</option>
-                              ))}
-                            </select>
-                          ) : field.type === "textarea" ? (
-                            <textarea value={entry[field.key] || ""} onChange={(e) => updateEntry(item.id, field.key, e.target.value)} placeholder={field.placeholder} rows={4} style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, color: "#1e293b", resize: "vertical", boxSizing: "border-box" }} />
-                          ) : (
-                            <input value={entry[field.key] || ""} onChange={(e) => updateEntry(item.id, field.key, e.target.value)} placeholder={field.placeholder} style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, color: "#1e293b", boxSizing: "border-box" }} />
-                          )}
+                    <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 14 }}>
+                      {itemEntries.map((entry, ei) => (
+                        <div key={entry._id} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, padding: 14 }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                            <span style={{ fontSize: 12, fontWeight: 600, color: "#64748b" }}>{ei + 1}번째</span>
+                            <button onClick={(e) => { e.stopPropagation(); removeEntry(item.id, entry._id); }} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 13 }}>삭제</button>
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                            {item.fields.map((field) => (
+                              <div key={field.key}>
+                                <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#475569", marginBottom: 4 }}>{field.label}</label>
+                                {field.type === "select" ? (
+                                  <select value={entry[field.key] || ""} onChange={(e) => updateEntry(item.id, entry._id, field.key, e.target.value)} style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, color: "#1e293b", background: "#fff" }}>
+                                    <option value="">선택</option>
+                                    {field.options.map((opt) => (
+                                      <option key={opt} value={opt}>{opt}</option>
+                                    ))}
+                                  </select>
+                                ) : field.type === "textarea" ? (
+                                  <textarea value={entry[field.key] || ""} onChange={(e) => updateEntry(item.id, entry._id, field.key, e.target.value)} placeholder={field.placeholder} rows={4} style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, color: "#1e293b", resize: "vertical", boxSizing: "border-box" }} />
+                                ) : (
+                                  <input value={entry[field.key] || ""} onChange={(e) => updateEntry(item.id, entry._id, field.key, e.target.value)} placeholder={field.placeholder} style={{ width: "100%", padding: "10px 12px", border: "1px solid #e2e8f0", borderRadius: 8, fontSize: 14, color: "#1e293b", boxSizing: "border-box" }} />
+                                )}
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       ))}
+                      <button onClick={(e) => { e.stopPropagation(); addEntry(item.id); }} style={{ width: "100%", padding: "10px", background: "none", border: "1px dashed #cbd5e1", borderRadius: 8, color: "#64748b", fontSize: 13, cursor: "pointer" }}>
+                        + {item.title} 추가
+                      </button>
                     </div>
                   )}
                 </div>
