@@ -576,6 +576,13 @@ export default function Home() {
     }
     setLoaded(true);
     saveUTM();
+    // 사후 행정 페이지는 다크 모드 — body 배경 강제 변경
+    document.body.style.background = "#0c0c10";
+    document.body.style.color = "#e2e8f0";
+    return () => {
+      document.body.style.background = "";
+      document.body.style.color = "";
+    };
   }, []);
 
   useEffect(() => {
