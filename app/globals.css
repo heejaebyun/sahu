@@ -28,6 +28,10 @@
 }
 
 /* ── 다크 모드 (사후 행정) ── */
+[data-theme="dark"],
+[data-theme="dark"] * {
+  color-scheme: dark;
+}
 [data-theme="dark"] {
   --primary: #fafafa;
   --secondary: #e2e8f0;

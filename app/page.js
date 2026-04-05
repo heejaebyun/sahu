@@ -649,7 +649,7 @@ export default function Home() {
 
   // ── localStorage 로딩 전에는 빈 화면 (깜빡임 방지) ──
   if (!loaded) {
-    return <div data-theme="dark" />;
+    return <div data-theme="dark" style={{ background: "#0c0c10", minHeight: "100vh" }} />;
   }
 
   // ── 시작 화면 ──
