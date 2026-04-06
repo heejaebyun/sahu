@@ -166,9 +166,9 @@ export default function AgreementPage() {
     } catch {}
   };
 
-  // 결제 제출 핸들러
+  // 결제 제출 핸들러 — 주문 성공 시에만 true 반환
   const handlePaymentSubmit = async (method) => {
-    if (!formData.paymentEmail || !formData.paymentPhone || !formData.depositorName) return;
+    if (!formData.paymentEmail || !formData.paymentPhone || !formData.depositorName) return false;
 
     try {
       const res = await fetch("/api/order/create", {
@@ -192,11 +192,14 @@ export default function AgreementPage() {
       if (data.success) {
         setFormData((p) => ({ ...p, orderNumber: data.orderNumber, selectedPaymentMethod: method }));
         setPaymentClicked(true);
+        return true;
       } else {
-        alert(data.error || "주문 생성에 실패했습니다.");
+        alert(data.error || "주문 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+        return false;
       }
     } catch {
-      alert("주문 생성 중 오류가 발생했습니다.");
+      alert("주문 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+      return false;
     }
   };
 
@@ -874,8 +877,8 @@ export default function AgreementPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   <button
                     onClick={async () => {
-                      await handlePaymentSubmit("카카오페이");
-                      window.open("https://qr.kakaopay.com/Ej8kN1XiJ", "_blank");
+                      const ok = await handlePaymentSubmit("카카오페이");
+                      if (ok) window.open("https://qr.kakaopay.com/Ej8kN1XiJ", "_blank");
                     }}
                     disabled={!formData.paymentEmail || !formData.paymentPhone || !formData.depositorName}
                     style={{
@@ -893,8 +896,8 @@ export default function AgreementPage() {
                   </button>
                   <button
                     onClick={async () => {
-                      await handlePaymentSubmit("토스");
-                      window.open("https://toss.me/sahu", "_blank");
+                      const ok = await handlePaymentSubmit("토스");
+                      if (ok) window.open("https://toss.me/sahu", "_blank");
                     }}
                     disabled={!formData.paymentEmail || !formData.paymentPhone || !formData.depositorName}
                     style={{
@@ -943,10 +946,14 @@ export default function AgreementPage() {
               {formData.selectedPaymentMethod === "계좌이체" && (
                 <div style={{ background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: 8, padding: 20, marginTop: 16, textAlign: "center" }}>
                   <p style={{ fontSize: 14, color: "#0369a1", fontWeight: 600 }}>
-                    보안을 위해 입력하신 전화번호로 결제 계좌를 발송해 드렸습니다.
+                    주문이 접수되었습니다.
                   </p>
-                  <p style={{ fontSize: 12, color: "#64748b", marginTop: 8 }}>
-                    문자가 도착하지 않으면 sahu.kr@gmail.com으로 문의해 주세요.
+                  <p style={{ fontSize: 13, color: "#475569", marginTop: 8, lineHeight: 1.7 }}>
+                    입력하신 연락처로 결제 안내를 드릴 예정입니다.<br />
+                    잠시만 기다려 주세요.
+                  </p>
+                  <p style={{ fontSize: 12, color: "#94a3b8", marginTop: 12 }}>
+                    10분 이상 안내가 없으면 sahu.kr@gmail.com으로 문의해 주세요.
                   </p>
                 </div>
               )}

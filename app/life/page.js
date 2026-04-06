@@ -7,7 +7,6 @@ export default function LifePage() {
   const [entries, setEntries] = useState({});
   const [expandedItem, setExpandedItem] = useState(null);
   const [familyMembers, setFamilyMembers] = useState([]);
-  const [showShare, setShowShare] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
   // sessionStorage 저장/복원
@@ -87,20 +86,39 @@ export default function LifePage() {
   };
 
   const handleShare = async () => {
-    const shareData = { entries, familyMembers, sharedAt: new Date().toISOString() };
-    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(shareData))));
-    const shareUrl = `${window.location.origin}/life/shared?data=${encoded.slice(0, 100)}`;
+    const { filled } = getCompletionRate();
+    if (filled === 0) {
+      alert("정리한 항목이 없습니다. 먼저 내용을 입력해 주세요.");
+      return;
+    }
 
-    // 간단한 텍스트 공유
-    const text = `인생정리 체크리스트를 공유합니다.\n\n${getCompletionRate().filled}/${getCompletionRate().total}개 항목을 정리했습니다.\n\n확인하기: ${window.location.origin}/life`;
+    try {
+      // 서버에 공유 데이터 저장 → 고유 링크 생성
+      const res = await fetch("/api/share", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ entries, familyMembers }),
+      });
 
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: "SAHU 인생정리", text });
-      } catch {}
-    } else {
-      await navigator.clipboard.writeText(text);
-      alert("링크가 복사되었습니다. 가족에게 보내주세요.");
+      const result = await res.json();
+      if (!result.success) {
+        alert("공유 링크 생성에 실패했습니다.");
+        return;
+      }
+
+      const shareUrl = `${window.location.origin}/life/shared?id=${result.shareId}`;
+      const text = `인생정리를 공유합니다.\n\n${filled}개 항목이 정리되어 있습니다.\n중요한 내용이니 확인해 주세요.\n\n${shareUrl}`;
+
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: "SAHU 인생정리", text, url: shareUrl });
+        } catch {}
+      } else {
+        await navigator.clipboard.writeText(text);
+        alert("공유 링크가 복사되었습니다. 가족에게 보내주세요.");
+      }
+    } catch {
+      alert("공유 링크 생성 중 오류가 발생했습니다.");
     }
   };
 
@@ -177,8 +195,10 @@ export default function LifePage() {
       {LIFE_CATEGORIES.map((cat) => {
         const items = LIFE_CHECKLIST.filter((i) => i.category === cat.id);
         const catFilled = items.filter((item) => {
-          const entry = entries[item.id];
-          return entry && item.fields.some((f) => entry[f.key]?.trim());
+          const itemEntries = getEntries(item.id);
+          return itemEntries.some((entry) =>
+            item.fields.some((f) => entry[f.key]?.trim?.())
+          );
         }).length;
 
         return (
@@ -302,7 +322,7 @@ export default function LifePage() {
       {/* 푸터 */}
       <footer style={{ borderTop: "1px solid #e2e8f0", paddingTop: 20, marginTop: 32, fontSize: 11, color: "#94a3b8", textAlign: "center", lineHeight: 1.6 }}>
         <p>본 서비스는 일반적인 정보 정리 목적이며, 법률·세무 자문을 대체하지 않습니다.</p>
-        <p style={{ marginTop: 4 }}>모든 데이터는 브라우저에만 저장됩니다. 서버에 전송되지 않습니다.</p>
+        <p style={{ marginTop: 4 }}>정리 내용은 브라우저에 저장됩니다. 공유 또는 PDF 생성 시에만 서버로 전송됩니다.</p>
         <p style={{ marginTop: 4 }}>© 2026 SAHU 인생정리</p>
       </footer>
     </main>

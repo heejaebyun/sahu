@@ -1345,7 +1345,7 @@ export default function Home() {
           않습니다.
         </p>
         <p style={{ marginTop: 4 }}>
-          © 2026 사후(SAHU). 모든 데이터는 브라우저에만 저장됩니다.
+          © 2026 사후(SAHU). 체크리스트 진행 상황은 브라우저에 저장되며, 상담 신청 시에만 서버로 전송됩니다.
         </p>
       </footer>
     </main>

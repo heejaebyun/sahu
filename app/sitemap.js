@@ -9,6 +9,24 @@ export default function sitemap() {
       priority: 1.0,
     },
     {
+      url: `${baseUrl}/landing`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/life`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/agreement`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/subscriptions`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
