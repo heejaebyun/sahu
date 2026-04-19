@@ -1,11 +1,1 @@
-# 에이전트 기억
-
-## 내가 한 제안들
-
-## 내가 받은 피드백
-
-## 확인된 사실
-
-## 진행 중인 과제
-
-## 다음 회의에서 할 것
+[에러] Command failed: cat "/tmp/sahu-meeting-1776430826325.txt" | "/Users/byunheejae/.vscode/extensions/anthropic.claude-code-2.1.111-darwin-arm64/resources/native-binary/claude" --print --model opus --effo
